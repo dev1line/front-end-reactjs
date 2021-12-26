@@ -1,5 +1,5 @@
 export const ENVIRONMENT = 'dev'
-//export const ENVIRONMENT = "production";
+// export const ENVIRONMENT = 'production'
 const HOST = 'cms-keystonejs.herokuapp.com' //'54.159.116.102'
 const PORT = process.env.PORT || '3001'
 
@@ -7,4 +7,4 @@ const apiEnv = {
   dev: `https://${HOST}:${PORT}/admin/api`,
 }
 
-export const API_CMS = apiEnv[ENVIRONMENT]
+export const API_CMS = apiEnv['dev']
