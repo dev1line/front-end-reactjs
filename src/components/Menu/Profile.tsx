@@ -14,6 +14,8 @@ import {
 } from '@pancakeswap/uikit'
 import  Info  from './Info';
 import { useModal } from '@pancakeswap/uikit'
+import { client } from 'apolo-client';
+import { ApolloProvider } from '@apollo/client';
 interface CollectRoundWinningsModalProps extends InjectedModalProps {
   payout: number
   roundId: string
@@ -54,11 +56,13 @@ const Profile: React.FC<CollectRoundWinningsModalProps> = ({
   onSuccess,
 }) => {
 
-  // const handleCLose = () => {
-  //   window.location.href = "/"
-  // }
-  const [onpresentInfo] = useModal(
-    <Info payout={100} roundId={"okok"} epoch={1} />,
+  const handleCLose = () => {
+    close()
+  }
+  const [onpresentInfo, close] = useModal(
+    <ApolloProvider client={client}>
+    <Info payout={100} roundId={"okok"} epoch={1} onClose={handleCLose}/>
+    </ApolloProvider>,
     false,
   )
   return (

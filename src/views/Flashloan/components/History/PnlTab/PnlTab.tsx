@@ -184,7 +184,7 @@ const PnlTab: React.FC<PnlTabProps> = ({ hasBetHistory, bets }) => {
         <Divider />
 
         <Flex justifyContent="center" mt="24px">
-          <Link href={`https://bscscan.com/address/${account}#internaltx`} mb="16px" external>
+          <Link href={`https://kovan.etherscan.io/address/${account}`} mb="16px" external>
             <Button mt="8px" width="100%">
               {t('View Reclaimed & Won')}
               <OpenNewIcon color="white" ml="4px" />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import {
   ModalContainer,
@@ -14,7 +14,12 @@ import {
   ButtonMenuItem,
   ButtonMenu,
   ModalCloseButton,
+  Button,
 } from '@pancakeswap/uikit'
+import { useWeb3React } from '@web3-react/core'
+import { CHECK_ACCOUNT, GET_YOUR_ACCOUNT } from 'query/general'
+import { useMutation, useQuery } from '@apollo/client'
+import { CREATE_REFERRAL } from 'query/mutation'
 
 interface CollectRoundWinningsModalProps extends InjectedModalProps {
   payout: number
@@ -22,6 +27,7 @@ interface CollectRoundWinningsModalProps extends InjectedModalProps {
   epoch: number
   onSuccess?: () => Promise<void>
   onDismiss?:() => void
+  onClose: () => void
 }
 
 const ButtonMenus = styled(ButtonMenu)`
@@ -77,20 +83,48 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
   epoch,
   onDismiss,
   onSuccess,
+  onClose
 }) => {
-  const [index, setIndex] = useState(0); 
+  const [index, setIndex] = useState(0);  
+  const {account} = useWeb3React();
+  const [referralCode, setReferralCode] = useState(reverseString(account));
+  const [referralCodeFrom, setReferralCodeFrom] = useState("");
+  const [isCopied, setIsCopied] = useState(false);
+  const [createReferral] = useMutation(CREATE_REFERRAL);
+  const [isHide, setIsHide] = useState(false);
   const handleClickMenu = (index) => {
-      setIndex(index);
-      console.log(index)
+    setIndex(index);
+    console.log(index)
   }
   const handleChange = (e) => {
-      console.log(e)
+      switch(e.target.name) {
+        case "referral": {
+          // setReferralCode(e.target.value);
+          return;
+        }
+        case "referral-from": {
+          setReferralCodeFrom(e.target.value);
+          return;
+        }
+        default: return;
+      }
   }
-  // const handleCLose = () => {
-  //   window.location.href = "/"
-  // }
-  const [referralCode, setReferralCode] = useState("https://yourreferralinhere.com");
-  const [isCopied, setIsCopied] = useState(false);
+  function reverseString(str) {
+    // Step 1. Use the split() method to return a new array
+    var splitString = str.split(""); // var splitString = "hello".split("");
+    // ["h", "e", "l", "l", "o"]
+ 
+    // Step 2. Use the reverse() method to reverse the new created array
+    var reverseArray = splitString.reverse(); // var reverseArray = ["h", "e", "l", "l", "o"].reverse();
+    // ["o", "l", "l", "e", "h"]
+ 
+    // Step 3. Use the join() method to join all elements of the array into a string
+    var joinArray = reverseArray.join(""); // var joinArray = ["o", "l", "l", "e", "h"].join("");
+    // "olleh"
+    
+    //Step 4. Return the reversed string
+    return joinArray; // "olleh"
+}
   const handleCopy = () => {
     function copyToClipboard(textToCopy) {
       // navigator clipboard api needs a secure context (https)
@@ -119,13 +153,83 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
     .then(() => {
       console.log('text copied !');
       //reset for not warning ... to smile
-      setReferralCode("https://yourreferralinhere.com");
+
       setIsCopied(true);
       setTimeout(() => {
         setIsCopied(false);
       }, 300);
     })
     .catch(() => console.log('error'));
+  }
+  const {
+    loading: fetching,  
+    error,
+    data: checkAccountExist = {},
+    refetch,
+  } = useQuery(CHECK_ACCOUNT);
+  const {
+    loading,  
+    error: err,
+    data: yourAccount = {},
+    refetch: refetcher,
+  } = useQuery(GET_YOUR_ACCOUNT);
+
+  useEffect(() => {
+    refetcher({
+      variables: {
+        sender: account || ""
+    }
+  });
+  }, []);
+  console.log("yourAccount id", yourAccount)
+  const formatDate = (date) => {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+  const handleSendReferralCode = async () => {
+    console.log("value now to submit", checkAccountExist)
+    refetch({
+      variables: {
+        sender:reverseString(referralCodeFrom) || ""
+    }
+    });
+    if(checkAccountExist?.account?.length == 0) {
+      //return not found referralcode
+      console.log("account not found 1", reverseString(referralCodeFrom))
+      return;
+    }
+    const data = {
+      addressFrom: reverseString(referralCodeFrom),
+      addressTo: account,
+      referralCode: referralCodeFrom,
+      referralAt: formatDate(new Date()),
+    }
+    if(checkAccountExist?.account?.length > 0) {
+      console.log("start create Referral")
+      try {
+        await createReferral({
+          variables: {
+            data,
+            id: checkAccountExist?.account[0].id,
+            dataStatus: {
+              statusReferral: true
+            }
+          }
+        })
+        setIsHide(true);
+      } catch(err) {
+        console.log(err)
+      }
+  }
   }
   return (
     <ModalContainer minWidth="365px" position="relative" >
@@ -138,10 +242,9 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
             </Heading>
          </Wrapper>   
         </ModalTitle>
-    {/* <Boxer onClick={handleCLose}> */}
+        <Boxer onClick={onClose}>
         <ModalCloseButton onDismiss={onDismiss}/>
-
-    {/* </Boxer> */}
+        </Boxer>
       </ModalHeaders>
       <WrapperBoder>
           <ButtonMenus activeIndex={index} onItemClick={handleClickMenu} variant="subtle" scale="sm" >
@@ -149,12 +252,12 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
             <ButtonMenuItem style={{fontSize: 13, padding:'0px 36px'}}>Leaderboard</ButtonMenuItem>
           </ButtonMenus>
         </WrapperBoder>
-      <ModalBody px="24px" pt="0px" pb="24px" overflowY="scroll" maxHeight="90vh">  
+      <ModalBody px="24px" pt="0px" pb="24px" overflowY="scroll" maxHeight="90vh" height="512px">  
         {index === 0 ?    
         <div>
             <Headinger>your Refferal code</Headinger>
             <Flex alignItems="center" justifyContent="space-between" mb="24px" mt="12px" position="relative">
-                <Input id="referral-code" type="text" value={referralCode} contentEditable="false" style={{marginRight: 10}} onChange={handleChange} />
+                <Input id="referral-code" type="text" name='referral' value={referralCode} contentEditable="false" style={{marginRight: 10}} onChange={handleChange} />
                 <Image src="/images/vectorpaint.png" height="20px" width="20px" style={{cursor:'pointer'}} onClick={handleCopy} />            
                {isCopied &&  <Flex id="copied" style={{
                   position: 'absolute',
@@ -170,7 +273,17 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                   Copied!
                 </Flex>}
             </Flex>
-
+           {((yourAccount && yourAccount.account && yourAccount?.account[0]?.statusReferral) || isHide) ? "" :
+            <>
+              <Headinger>Enter Your friend's Referral Code</Headinger>
+              <Flex alignItems="center" justifyContent="space-between" mb="24px" mt="12px" position="relative">
+                  <Input id="referral-code-from" type="text" name='referral-from' value={referralCodeFrom} style={{marginRight: 10}} onChange={handleChange} />
+                  <Button onClick={handleSendReferralCode}>
+                    Send
+                  </Button>                      
+              </Flex>
+            </>
+           }
             <Headinger>your Refferals</Headinger>
                 <table style={{width:'100%', borderRadius:7}}>
                   <thead>

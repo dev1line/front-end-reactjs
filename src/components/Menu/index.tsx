@@ -17,6 +17,11 @@ import contractDefinition from "../../config/abi/FlashloanMoneyLego.json"
 import { useAppDispatch } from 'state'
 import { State } from '../../state/types'
 import { setContract } from 'state/Flashloan'
+import { ApolloProvider, useMutation, useQuery } from '@apollo/client'
+import { CHECK_ACCOUNT } from 'query/general'
+import { CREATE_ACCOUNT } from 'query/mutation'
+import { client } from 'apolo-client'
+
 declare let window: any;
 const Boxer = styled.div`
 & > div > nav > div:first-child > a {
@@ -27,9 +32,42 @@ const Menu = (props) => {
   const { account } = useWeb3React()
   const { login, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
+
   const dispatch = useAppDispatch()
   const abi = useSelector((state: State) => state.Flashloan.contract.abi)
-
+  console.log("account web3", account)
+  const {
+    loading: fetching,  
+    error,
+    data: checkAccountExist = {},
+    refetch,
+  } = useQuery(CHECK_ACCOUNT, {
+    variables: {
+        sender: account || ""
+    }
+  });
+  const [createAccount] = useMutation(CREATE_ACCOUNT);
+  useEffect(() => {
+  const runner = async () => {
+    if(!!checkAccountExist && !!account) {
+      console.log("OK to create")     
+     try {
+      await createAccount({
+        variables: {
+          account: {
+            address: account,
+            nickname: 'noname',
+            referralCode: reverseString(account)
+          } 
+        }
+      })
+     } catch (err) {
+       console.log(err)
+     }
+    }
+   }
+   runner();
+  }, [checkAccountExist])
   useEffect(() => {
     async function runer() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -53,11 +91,7 @@ const Menu = (props) => {
         console.log(err);
       }
       if (signer && (await signer.getAddress())) {
-        // const contractFlashloanMoneyLego = new ethers.Contract(
-        //   contractFlashloanMoneyLegoAddress,
-        //   contractDefinition.abi,
-        //   signer
-        // );
+     
         dispatch(setContract({
           address: contractFlashloanMoneyLegoAddress,
           abi:  contractDefinition.abi,
@@ -71,9 +105,19 @@ const Menu = (props) => {
       }
     }
     runer();
+       //check account exist in cms
+      //  const data = refetch({
+      //   sender: account
+      // });
+      // console.log("checkAccountExist in ", checkAccountExist, data);
   }, [account])
-  const [onpresentReferral] = useModal(
-    <Referral payout={100} roundId={"okok"} epoch={1} />,
+  const handleClose = () => {
+    close();
+  }
+  const [onpresentReferral, close] = useModal(
+    <ApolloProvider client={client}>
+    <Referral payout={100} roundId={"okok"} epoch={1} onClose={handleClose}/>
+    </ApolloProvider>,
     false,
   )
   useEffect(() => {
@@ -85,6 +129,22 @@ const Menu = (props) => {
       onpresentProfile()
     })
   },[]);
+  function reverseString(str) {
+    // Step 1. Use the split() method to return a new array
+    var splitString = str.split(""); // var splitString = "hello".split("");
+    // ["h", "e", "l", "l", "o"]
+ 
+    // Step 2. Use the reverse() method to reverse the new created array
+    var reverseArray = splitString.reverse(); // var reverseArray = ["h", "e", "l", "l", "o"].reverse();
+    // ["o", "l", "l", "e", "h"]
+ 
+    // Step 3. Use the join() method to join all elements of the array into a string
+    var joinArray = reverseArray.join(""); // var joinArray = ["o", "l", "l", "e", "h"].join("");
+    // "olleh"
+    
+    //Step 4. Return the reversed string
+    return joinArray; // "olleh"
+}
   const history = useHistory();
   const profile = {
     username: "yourname",
@@ -101,15 +161,6 @@ const Menu = (props) => {
     <Profile payout={100} roundId={"okok"} epoch={1} />,
     false,
   )
-
-  // history.listen((location, action) => {
-  //   if(location.pathname === '/referral' ) {
-  //     onpresentReferral()
-  //   }
-  //   if(location.pathname === '/profile') {
-  //     onpresentProfile()
-  //   }
-  // })
   
   useEffect(() => {
     const Imag = () => `<img src="images/icon.ico" id="imgLogo" />`

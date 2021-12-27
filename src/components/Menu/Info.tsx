@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import {
   ModalContainer,
@@ -14,13 +14,20 @@ import {
   Button,
   ModalCloseButton,
 } from '@pancakeswap/uikit'
-
+import useToast from 'hooks/useToast'
+import { upload } from 'utils/upload'
+import { useMutation, useQuery } from "@apollo/client";
+import { UPDATE_PROFILE } from 'query/mutation'
+import {GET_YOUR_ACCOUNT} from 'query/general'
+import { SERVER_API } from 'apolo-client/config'
+import { useWeb3React } from '@web3-react/core'
 interface CollectRoundWinningsModalProps extends InjectedModalProps {
   payout: number
   roundId: string
   epoch: number
   onSuccess?: () => Promise<void>
   onDismiss?:() => void
+  onClose: () => void
 }
 
 const Wrapper = styled.div`
@@ -46,35 +53,105 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
   epoch,
   onDismiss,
   onSuccess,
+  onClose
 }) => {
   const [avatar,setAvatar] = useState({picture:"", src:""});
-  const [username, setUsername] = useState("WuanSan");
+  const [nickname, setNickname] = useState("WuanSan");
   const handleChange = (e) => {
-      setUsername(e.target.value);
+    e.preventDefault();
+      setNickname(e.target.value);
   }
-  // const handleCLose = () => {
-  //   window.location.href = "/"
-  // }
+  const [media, setMedia] = useState("");
+  const [mediaErr, setMediaErr] = useState(false);
+  const {account} = useWeb3React();
+  const { toastError, toastSuccess, toastWarning } = useToast()
+  
+  const { loading: fetching,  
+    error,
+    data: yourProfile = {},
+    refetch } = useQuery( GET_YOUR_ACCOUNT);
+    useEffect(() => {
+      refetch({
+        variables: {
+          sender: account || ""
+        }
+      });
+    }, []);
+    useEffect(() => {
+      yourProfile &&  yourProfile.account && setNickname(yourProfile.account[0].nickname);
+    }, [yourProfile]);
+    yourProfile &&  yourProfile.account && console.log("Your profile", yourProfile, yourProfile.account[0].avatar?.original)
+  const [updateProfile, {}] = useMutation(UPDATE_PROFILE);
   const handleChangeAvatar = () => {
     const fileUploader = document.getElementById('file-uploader');
     document.getElementById("lb-upload").click();
-    fileUploader.addEventListener('change', (event) => {
-      // const files = event.target.files;
-      // console.log('files', files);
-      
-      // const feedback = document.getElementById('feedback');
-      // const msg = `File ${files[0].name} uploaded successfully!`;
-      // feedback.innerHTML = msg;
-    });
   }
-  const handleChangeSelect = (event) => {
-    var picture = event.target.files[0];
+  const handleChangeSelect = (e) => {
+    var picture = e.target.files[0];
     var src     = URL.createObjectURL(picture);
     setAvatar({
       picture,
       src
     })
+    let file = e.target.files[0];
+
+    if (!file || !e.target?.validity?.valid) return;
+    if (file.size > 10000000) {
+      toastWarning("Image size is too big !")
+      // return;
+    }
+    if (file.name.includes(".svg") === true) {
+      toastWarning("Extension file is .svg not support !")
+      return;
+    }
+
+    setMedia(file);
+    setMediaErr(false);
   }
+
+  const onSubmit = async () => {
+    let updateData = {};
+    if (media) {
+      let rs = undefined;
+      try {
+        rs = media && (await upload(media));
+      } catch (error: any) {
+          rs = undefined;
+          toastError("Upload image is Fail !")
+      }  
+
+      if(yourProfile && rs) {
+        updateProfile({
+          variables: {
+            data: {
+              avatar: {
+                create: {
+                  filename: rs.filename,
+                  originalFilename: rs.originalname,
+                  publicUrl: rs.publicUrl,
+                }
+              }
+            },
+            id: yourProfile?.account[0].id
+          },
+        });
+        toastSuccess("Update Profile successfully")
+      }  
+    }
+
+    if(yourProfile &&  yourProfile.account && nickname != yourProfile.account[0].nickname ) {
+      updateProfile({
+        variables: {
+          data: {
+            nickname
+          },
+          id: yourProfile?.account[0].id
+        },
+      });
+      toastSuccess("Update Profile successfully")
+    }
+
+  };
   return (
     <ModalContainer minWidth="288px" position="relative" >
       <ModalHeaders>
@@ -86,9 +163,9 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
             </Heading>
          </Wrapper>   
         </ModalTitle>
-    {/* <Boxer onClick={handleCLose}> */}
+    <Boxer onClick={onClose}>
         <ModalCloseButton onDismiss={onDismiss}/>
-    {/* </Boxer> */}
+    </Boxer>
       </ModalHeaders>
       <ModalBody p="24px" maxHeight="90vh">
             <Flex flexDirection="column" justifyContent="space-around" alignItems="center">
@@ -100,7 +177,7 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
                     fontSize: 12,
                     fontWeight: 'bold'}}>Profile Picture</Heading>
            
-                <Image src={ avatar.picture ? avatar.src :"https://candlegenie.io/images/profileplaceholder.jpg"}  style={{ background: 'linear-gradient(rgb(255, 216, 0) 0%, rgb(253, 171, 50) 100%)', borderRadius: '50%', padding:2, width:"100px", height:"100px"}}/>
+                <Image src={ avatar.picture ? avatar.src : (( yourProfile &&  yourProfile.account && yourProfile?.account[0].avatar?.original) ? SERVER_API + yourProfile?.account[0].avatar?.original : "https://candlegenie.io/images/profileplaceholder.jpg")}  style={{ background: 'linear-gradient(rgb(255, 216, 0) 0%, rgb(253, 171, 50) 100%)', borderRadius: '50%', padding:2, width:"100px", height:"100px"}}/>
                 
                 <Text style={{
                     color: 'rgb(118, 69, 217)',
@@ -120,8 +197,8 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
                             marginBottom: 5,
                             fontSize: 12,
                             fontWeight: 'bold'
-                        }}>User Name</Heading>
-                        <Input type="text" value={username} onChange={handleChange} />
+                        }}>Nick Name</Heading>
+                        <Input type="text" value={nickname} onChange={handleChange} />
                         <Flex mt="20px" mb="88px">
                             <Checkbox scale="sm" />
                             <Text style={{marginLeft: 5}}>Hide me from the leaderboards</Text>
@@ -131,11 +208,11 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
                         width="100%"
                         mb="8px"
                         style={{ backgroundColor: 'rgb(251, 179, 9)', height:35}}
-                        // onClick={onpresentInfo}
-                        // isLoading={isPendingTx}
-                        // endIcon={isPendingTx ? <AutoRenewIcon spin color="currentColor" /> : null}
+                       onClick={onSubmit}
                     >
+                      <Boxer onClick={onClose}>
                         Save Changes
+                      </Boxer>
                     </Button>
                 </Flex>
             </Flex>
