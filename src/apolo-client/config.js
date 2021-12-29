@@ -8,3 +8,4 @@ const apiEnv = {
 }
 
 export const API_CMS = apiEnv['dev']
+export const SERVER_API = `http://${HOST}`
