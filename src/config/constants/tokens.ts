@@ -52,6 +52,30 @@ const tokens = [
     symbol: "WETH",
     image: "/img-coin/2396.png",
     address: "0xd0a1e359811322d97991e03f863a0c30c2cf029c"
+  },
+  {
+    name: "IT Faculty",
+    symbol: "ITF",
+    image: "/img-coin/not-found.png",
+    address: "0xc3cBC3210117405C7A0C8f96C9F4267349b4653d"
+  },
+  {
+    name: "Nguyen Tuan Quang Sang",
+    symbol: "NTQS",
+    image: "/img-coin/not-found.png",
+    address: "0xCB2b95fA11dD895f0C263168168a643Eb4c3Bd5c "
+  },
+  {
+    name: "Bach Khoa Da Nang",
+    symbol: "BKDN",
+    image: "/img-coin/not-found.png",
+    address: "0xf933cA1b3bBD396770b7a8A69e9Cb49ee12D0278"
+  },
+  {
+    name: "17T3",
+    symbol: "17T3",
+    image: "/img-coin/not-found.png",
+    address: "0x4ECE45b3A5EA7641Bb8dD98a07bd95A7F06B2cA8"
   }
 ]
 export default tokens
