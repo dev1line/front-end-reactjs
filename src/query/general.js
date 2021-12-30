@@ -14,6 +14,14 @@ export const CHECK_ACCOUNT = gql`
   query checkAccountExist($sender: String) {
     account: allCustomers(where: { address: $sender }) {
       id
+      address
+      nickname
+      referralCode
+      avatar {
+        original: publicUrl
+        filename
+      }
+      statusReferral
     }
   }
 `

@@ -37,7 +37,7 @@ const YourResult = styled(Box)`
 
 const HistoricalBet: React.FC<BetProps> = ({ bet }) => {
   const [isOpen, setIsOpen] = useState(false)
-  console.log("BET", bet)
+  // console.log("BET", bet)
   const { t } = useTranslation()
 
   const toggleOpen = () => setIsOpen(!isOpen)
