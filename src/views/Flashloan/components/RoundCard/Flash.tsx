@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { useWeb3React } from '@web3-react/core'
 import { Box, Flex, CardBody, Button, Text, useModal } from '@pancakeswap/uikit'
 import Card from './Card'
 import ConfirmFlash from './ConfirmFlash'
@@ -22,7 +21,6 @@ interface PropsFlash {
   onConfirm?: () => void
 }
 const Flash: React.FC<PropsFlash> = ({ block, onConfirm }) => {
-  const { account } = useWeb3React()
   const dispatch = useAppDispatch()
   const swiperList = useSelector((state: State) => state.Flashloan.swiperList)
   const tokenLoan = useSelector((state: State) => state.Flashloan.swiperList[0].token)
@@ -69,9 +67,9 @@ const Flash: React.FC<PropsFlash> = ({ block, onConfirm }) => {
       }
     };
     const temp = [...swiperList.slice(0, data.index), data.prepend, swiperList[data.index], ...swiperList.slice(data.index + 1)];
-    const just = temp.filter(i => i.type == StatusBlock.EXCHANGE && !i.refund && i.tokenOut != swiperList[0].token).map(ii => ii.tokenOut);
+    const just = temp.filter(i => i.type === StatusBlock.EXCHANGE && !i.refund && i.tokenOut !== swiperList[0].token).map(ii => ii.tokenOut);
     just.forEach(iii => {
-      if (temp.filter(i => i.type == StatusBlock.EXCHANGE && i.refund && i.tokenIn.address == iii.address).length == 0) {
+      if (temp.filter(i => i.type === StatusBlock.EXCHANGE && i.refund && i.tokenIn.address === iii.address).length === 0) {
         temp.push({
           type: StatusBlock.EXCHANGE,
           refund: true,
@@ -81,8 +79,7 @@ const Flash: React.FC<PropsFlash> = ({ block, onConfirm }) => {
         })
       }
     })
-    // temp.filter(i => i.type == StatusBlock.EXCHANGE && i.refund)
-    console.log("just", just)
+
     dispatch(addExchange(temp))
   }
   const [onpresentFlash] = useModal(

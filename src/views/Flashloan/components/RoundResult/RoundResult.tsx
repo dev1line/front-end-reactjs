@@ -1,12 +1,9 @@
 import React from 'react'
 import { BinanceIcon, Box, BoxProps, Flex, SyncAltIcon, Text } from '@pancakeswap/uikit'
-import { BetPosition, Round, State, StatusBlock } from 'state/types'
-import { useTranslation } from 'contexts/Localization'
+import { BetPosition, StatusBlock } from 'state/types'
 import { formatUsd } from '../../helpers'
-import { formatBnb } from 'views/Flashloan/helpers'
 import PositionTag from '../PositionTag'
-import { LockPriceRow, PrizePoolRow, RoundResultBox } from './styles'
-import { useSelector } from 'react-redux'
+import { RoundResultBox } from './styles'
 import styled from 'styled-components'
 
 interface RoundResultProps extends BoxProps {
@@ -19,16 +16,16 @@ const Image = styled.img`
 
 const RoundResult: React.FC<RoundResultProps> = ({ round, children, ...props }) => {
 
-  const betPosition = parseInt(round?.profit) > 0 ? BetPosition.BULL: (parseInt(round?.profit) == 0 ? BetPosition.HOUSE :BetPosition.BEAR)
+  const betPosition = parseInt(round?.profit) > 0 ? BetPosition.BULL: (parseInt(round?.profit) === 0 ? BetPosition.HOUSE :BetPosition.BEAR)
 
   const isPositionUp = parseInt(round?.profit) > 0  ? true: false;
 
   const priceDifference = parseInt(round?.profit);
-  // const swiperList = useSelector((state: State) => state.Flashloan.swiperList)
-  const {history, name, profit, txhash} = round;
-  console.log("DATA:", history, name, profit, txhash)
+
+  const {history} = round;
+
   const swiperList = JSON.parse(history);
-  const ExList = swiperList.filter(i => i.type == StatusBlock.EXCHANGE);
+  const ExList = swiperList.filter(i => i.type === StatusBlock.EXCHANGE);
   return (
     <RoundResultBox betPosition={betPosition} {...props}>
       <Flex justifyContent="space-between" alignItems="center">

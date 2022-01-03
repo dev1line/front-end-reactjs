@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { useCountUp } from 'react-countup'
-import { CardBody,Box, Flex, PlayCircleOutlineIcon, ArrowForwardIcon, Skeleton, Text, TooltipText, useTooltip, Button, useModal, BinanceIcon, RemoveIcon, InfoIcon, ChevronDownIcon } from '@pancakeswap/uikit'
-import { useTranslation } from 'contexts/Localization'
+import { CardBody, Flex, PlayCircleOutlineIcon, ArrowForwardIcon, Text, Button, useModal, RemoveIcon, InfoIcon, ChevronDownIcon } from '@pancakeswap/uikit'
+import { getBubbleGumBackground } from '../../helpers'
 import tokens from 'config/constants/tokens'
-import { formatUsd, getBubbleGumBackground } from '../../helpers'
 import Card from './Card'
 import CardHeader from './CardHeader'
 import SelectCoin from './SelectCoin'
-import { changeTokenIn, changeTokenOut, setExchange, setSwiperList } from 'state/Flashloan'
+import { changeTokenIn, setExchange, setSwiperList } from 'state/Flashloan'
 import { useAppDispatch } from 'state'
 import { Coin, State, StatusBlock } from 'state/types'
 import routerV from 'config/constants/routerV'
@@ -47,7 +45,6 @@ const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
   
   
   const handleSelectTokenIn = (e, item) => {
-    // console.log(e, e.target.value, item)
     const data = {
       coin: item,
       index: epoch
@@ -68,7 +65,7 @@ const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
           exchange: i.exchange
         }
       }
-      if(i.type === StatusBlock.EXCHANGE && !i.refund && i.tokenOut === block.tokenOut && epoch == index) {
+      if(i.type === StatusBlock.EXCHANGE && !i.refund && i.tokenOut === block.tokenOut && epoch === index) {
         return {
           type: i.type,
           refund: i.refund,
@@ -80,9 +77,9 @@ const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
       return i;
     })
 
-    const just = newswiperList.filter(i => i.type == StatusBlock.EXCHANGE && !i.refund && i.tokenOut != swiperList[0].token).map(ii => ii.tokenOut);
+    const just = newswiperList.filter(i => i.type === StatusBlock.EXCHANGE && !i.refund && i.tokenOut !== swiperList[0].token).map(ii => ii.tokenOut);
     just.forEach(iii => {
-      if (newswiperList.filter(i => i.type == StatusBlock.EXCHANGE && i.refund && i.tokenIn.address == iii.address).length == 0) {
+      if (newswiperList.filter(i => i.type === StatusBlock.EXCHANGE && i.refund && i.tokenIn.address === iii.address).length === 0) {
         newswiperList.push({
           type: StatusBlock.EXCHANGE,
           refund: true,
@@ -93,13 +90,13 @@ const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
       }
     })
 
-    const justOut = newswiperList.filter(i => i.type == StatusBlock.EXCHANGE && !i.refund).map(ii => ii.tokenOut);
-    const justIn =  newswiperList.filter(i => i.type == StatusBlock.EXCHANGE && i.refund).map(ii => ii.tokenIn);
+    const justOut = newswiperList.filter(i => i.type === StatusBlock.EXCHANGE && !i.refund).map(ii => ii.tokenOut);
+    const justIn =  newswiperList.filter(i => i.type === StatusBlock.EXCHANGE && i.refund).map(ii => ii.tokenIn);
     console.log("just", justOut, justIn)
     const data = new Set<Coin>(justIn);
     data.forEach((iii, index) => {
-      if(justOut.findIndex(i => i.address == iii.address) < 0 || justIn.filter(its => its == iii).length > 1) {
-        const position = newswiperList.findIndex(it => it.tokenIn == iii && it.refund);
+      if(justOut.findIndex(i => i.address === iii.address) < 0 || justIn.filter(its => its === iii).length > 1) {
+        const position = newswiperList.findIndex(it => it.tokenIn === iii && it.refund);
         console.log("position", iii, position)
         newswiperList.splice(position, 1);
       }
@@ -131,7 +128,7 @@ const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
     const temp = swiperList.slice();
     const newList = [...temp.slice(0, epoch), ...temp.slice(epoch + 1)];
     const lastList = newList.map((item, index) => {
-      if(index == 1 && item.type != StatusBlock.ADD_END) {
+      if(index === 1 && item.type !== StatusBlock.ADD_END) {
         return {
           type: item.type,
           refund: item.refund,
@@ -142,11 +139,11 @@ const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
       }
       return item;
     })
-    const justOut = lastList.filter(i => i.type == StatusBlock.EXCHANGE && !i.refund).map(ii => ii.tokenOut);
-    const justIn =  lastList.filter(i => i.type == StatusBlock.EXCHANGE && i.refund).map(ii => ii.tokenIn);
+    const justOut = lastList.filter(i => i.type === StatusBlock.EXCHANGE && !i.refund).map(ii => ii.tokenOut);
+    const justIn =  lastList.filter(i => i.type === StatusBlock.EXCHANGE && i.refund).map(ii => ii.tokenIn);
     console.log("just", justOut, justIn)
     justIn.forEach((iii, index) => {
-      if(justOut.findIndex(i => i.address == iii.address) < 0) {
+      if(justOut.findIndex(i => i.address === iii.address) < 0) {
         const position = lastList.findIndex(i => i.tokenIn === iii && i.refund);
         console.log("position", iii, position)
         lastList.splice(position, 1);

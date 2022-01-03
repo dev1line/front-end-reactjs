@@ -1,12 +1,10 @@
-import React, { ReactElement, useState } from 'react'
-import { Flex, Text, Box, useModal, BinanceIcon } from '@pancakeswap/uikit'
+import React, { ReactElement } from 'react'
+import { Flex, Text, Box, useModal } from '@pancakeswap/uikit'
 import styled, { DefaultTheme } from 'styled-components'
 import SelectCoin from './SelectCoin'
 import {providerType, Coin, State} from "../../../../state/types"
 import tokens from "../../../../config/constants/tokens"
 import routerV from "../../../../config/constants/routerV"
-import { useAppDispatch } from 'state'
-import { setReverseCoin } from 'state/Flashloan'
 import { useSelector } from 'react-redux'
 type Status = 'expired' | 'live' | 'next' | 'soon' | 'canceled' | 'calculating'
 
@@ -78,10 +76,8 @@ const CardHeader: React.FC<CardHeaderProps> = ({ status, title, epoch, icon, hid
   const reverseToken = useSelector((state: State) => state.Flashloan.swiperList[0].token)
   const exchangeProvider = useSelector((state: State) => state.Flashloan.swiperList[epoch].exchange)
   const dataSelect = isExchange ? exchangeProvider : reverseToken;
-  const data = useSelector((state: State) => state.Flashloan.swiperList);
-  const dispatch = useAppDispatch();
-  // console.log("Data:", data, dataSelect, exchangeProvider, reverseToken, isExchange)
-  const [onpresentSelectCoin , close] = useModal(
+
+  const [onpresentSelectCoin] = useModal(
     <SelectCoin list={isExchange ? routerV: tokens} onSelect={handleSelect} isExchange={isExchange} />,
     false,
   )

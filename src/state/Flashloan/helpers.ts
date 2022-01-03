@@ -1,13 +1,7 @@
-import { request, gql } from 'graphql-request'
 
-import { Bet, BetPosition, Market, Flashloantatus, Round, RoundData } from 'state/types'
-import makeBatchRequest from 'utils/makeBatchRequest'
-
+import { Bet, BetPosition, Market, Round, RoundData } from 'state/types'
 import {
   BetResponse,
-  getRoundBaseFields,
-  getBetBaseFields,
-  getUserBaseFields,
   RoundResponse,
   MarketResponse,
 } from './queries'
@@ -161,138 +155,11 @@ export const getRoundResult = (bet: Bet, currentEpoch: number): Result => {
   return bet.position === roundResultPosition ? Result.WIN : Result.LOSE
 }
 
-/**
- * Given a bet object, check if it is eligible to be claimed or refunded
- */
 export const getCanClaim = (bet: Bet) => {
   return !bet.claimed && (bet.position === bet.round.position || bet.round.failed === true)
 }
 
-/**
- * Returns only bets where the user has won.
- * This is necessary because the API currently cannot distinguish between an uncliamed bet that has won or lost
- */
 export const getUnclaimedWinningBets = (bets: Bet[]): Bet[] => {
   return bets.filter(getCanClaim)
 }
 
-/**
- * Gets static data from the contract
- */
-// export const getStaticFlashloanData = async () => {
-//   const { methods } = getFlashloanContract()
-//   const [currentEpoch, intervalBlocks, minBetAmount, isPaused, bufferBlocks] = await makeBatchRequest([
-//     methods.currentEpoch().call,
-//     methods.intervalBlocks().call,
-//     methods.minBetAmount().call,
-//     methods.paused().call,
-//     methods.bufferBlocks().call,
-//   ])
-
-//   return {
-//     status: isPaused ? Flashloantatus.PAUSED : Flashloantatus.LIVE,
-//     currentEpoch: Number(currentEpoch),
-//     intervalBlocks: Number(intervalBlocks),
-//     bufferBlocks: Number(bufferBlocks),
-//     minBetAmount,
-//   }
-// }
-
-// export const getMarketData = async (): Promise<{
-//   rounds: Round[]
-//   market: Market
-// }> => {
-//   const response = (await request(
-//     GRAPH_API_Flashloan,
-//     gql`
-//       query getMarketData {
-//         rounds(first: 5, orderBy: epoch, orderDirection: desc) {
-//           ${getRoundBaseFields()}
-//         }
-//         market(id: 1) {
-//           id
-//           paused
-//           epoch {
-//             epoch
-//           }
-//         }
-//       }
-//     `,
-//   )) as { rounds: RoundResponse[]; market: MarketResponse }
-
-//   return {
-//     rounds: response.rounds.map(transformRoundResponse),
-//     market: transformMarketResponse(response.market),
-//   }
-// }
-
-// export const getRound = async (id: string) => {
-//   const response = await request(
-//     GRAPH_API_Flashloan,
-//     gql`
-//       query getRound($id: ID!) {
-//         round(id: $id) {
-//           ${getRoundBaseFields()}
-//           bets {
-//            ${getBetBaseFields()}
-//             user {
-//              ${getUserBaseFields()}
-//             }
-//           }
-//         }
-//       }
-//   `,
-//     { id },
-//   )
-//   return response.round
-// }
-
-type BetHistoryWhereClause = Record<string, string | number | boolean | string[]>
-
-// export const getBetHistory = async (
-//   where: BetHistoryWhereClause = {},
-//   first = 1000,
-//   skip = 0,
-// ): Promise<BetResponse[]> => {
-//   const response = await request(
-//     GRAPH_API_Flashloan,
-//     gql`
-//       query getBetHistory($first: Int!, $skip: Int!, $where: Bet_filter) {
-//         bets(first: $first, skip: $skip, where: $where) {
-//           ${getBetBaseFields()}
-//           round {
-//             ${getRoundBaseFields()}
-//           }
-//           user {
-//             ${getUserBaseFields()}
-//           } 
-//         }
-//       }
-//     `,
-//     { first, skip, where },
-//   )
-//   return response.bets
-// }
-
-// export const getBet = async (betId: string): Promise<BetResponse> => {
-//   const response = await request(
-//     GRAPH_API_Flashloan,
-//     gql`
-//       query getBet($id: ID!) {
-//         bet(id: $id) {
-//           ${getBetBaseFields()}
-//           round {
-//             ${getRoundBaseFields()}
-//           }
-//           user {
-//             ${getUserBaseFields()}
-//           } 
-//         }
-//       }
-//   `,
-//     {
-//       id: betId.toLowerCase(),
-//     },
-//   )
-//   return response.bet
-// }

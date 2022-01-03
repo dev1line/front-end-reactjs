@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import maxBy from 'lodash/maxBy'
-import merge from 'lodash/merge'
 import { BIG_ZERO } from 'utils/bigNumber'
 import { Bet, HistoryFilter, Market, FlashloanState, Flashloantatus, Round , Coin, StatusBlock} from 'state/types'
 import {

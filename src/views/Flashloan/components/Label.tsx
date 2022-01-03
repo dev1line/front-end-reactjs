@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react'
-import { useCountUp } from 'react-countup'
+import React from 'react'
 import styled from 'styled-components'
 import { BnbUsdtPairTokenIcon, Box, Card, PocketWatchIcon, Text } from '@pancakeswap/uikit'
-import { useGetLastOraclePrice } from 'state/hooks'
-import { useTranslation } from 'contexts/Localization'
+
 
 const Token = styled(Box)`
   margin-top: -24px;
@@ -46,12 +44,6 @@ const Price = styled(Text)`
   }
 `
 
-const Interval = styled(Text)`
-  ${({ theme }) => theme.mediaQueries.lg} {
-    text-align: center;
-    width: 32px;
-  }
-`
 
 const Label = styled(Card)<{ dir: 'left' | 'right' }>`
   align-items: ${({ dir }) => (dir === 'right' ? 'flex-end' : 'flex-start')};
@@ -70,18 +62,6 @@ const Label = styled(Card)<{ dir: 'left' | 'right' }>`
 `
 
 export const PricePairLabel: React.FC = () => {
-  const price = useGetLastOraclePrice()
-  const { countUp, update } = useCountUp({
-    start: 0,
-    end: price.toNumber(),
-    duration: 1,
-    decimals: 3,
-  })
-
-  useEffect(() => {
-    update(price.toNumber())
-  }, [price, update])
-
   return (
     <Box pl="24px" position="relative" display="inline-block">
       <Token left={0}>
@@ -89,9 +69,9 @@ export const PricePairLabel: React.FC = () => {
       </Token>
       <Label dir="left">
         <Title bold textTransform="uppercase">
-          BNBUSDT
+          BNB/USDT
         </Title>
-        <Price fontSize="12px">{`$${countUp}`}</Price>
+        <Price fontSize="12px">{`$${530.89}`}</Price>
       </Label>
     </Box>
   )
@@ -102,16 +82,12 @@ interface TimerLabelProps {
 }
 
 export const TimerLabel: React.FC<TimerLabelProps> = ({ interval }) => {
-
-  const { t } = useTranslation()
-
   return (
     <Box pr="24px" position="relative">
       <Label dir="right">
         <Title bold color="secondary">
-          {0 === 0 ? t('Closing') : ""}
+        {interval}
         </Title>
-        <Interval fontSize="12px">{interval}</Interval>
       </Label>
       <Token right={0}>
         <PocketWatchIcon />

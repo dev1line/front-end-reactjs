@@ -47,7 +47,7 @@ const IfoQuestions = () => {
                 {description.map((desc) => {
                   return (
                     <Text key={desc} color="textSubtle" as="p">
-                      {t(desc)}
+                      - {t(desc)}
                     </Text>
                   )
                 })}

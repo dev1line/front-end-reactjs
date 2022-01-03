@@ -62,7 +62,6 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
       setNickname(e.target.value);
   }
   const [media, setMedia] = useState("");
-  const [mediaErr, setMediaErr] = useState(false);
   const {account} = useWeb3React();
   const { toastError, toastSuccess, toastWarning } = useToast()
   
@@ -76,14 +75,13 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
           sender: account || ""
         }
       });
-    }, []);
+    }, [refetch, account]);
     useEffect(() => {
       yourProfile &&  yourProfile.account && setNickname(yourProfile.account[0].nickname);
     }, [yourProfile]);
     yourProfile &&  yourProfile.account && console.log("Your profile", yourProfile, yourProfile.account[0].avatar?.original)
-  const [updateProfile, {}] = useMutation(UPDATE_PROFILE);
+  const [updateProfile] = useMutation(UPDATE_PROFILE);
   const handleChangeAvatar = () => {
-    const fileUploader = document.getElementById('file-uploader');
     document.getElementById("lb-upload").click();
   }
   const handleChangeSelect = (e) => {
@@ -106,11 +104,10 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
     }
 
     setMedia(file);
-    setMediaErr(false);
+
   }
 
   const onSubmit = async () => {
-    let updateData = {};
     if (media) {
       let rs = undefined;
       try {
@@ -120,7 +117,7 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
           toastError("Upload image is Fail !")
       }  
 
-      if(yourProfile && rs) {
+      if(!error && !fetching && yourProfile && rs) {
         updateProfile({
           variables: {
             data: {
@@ -139,7 +136,7 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
       }  
     }
 
-    if(yourProfile &&  yourProfile.account && nickname != yourProfile.account[0].nickname ) {
+    if(yourProfile &&  yourProfile.account && nickname !== yourProfile.account[0].nickname ) {
       updateProfile({
         variables: {
           data: {

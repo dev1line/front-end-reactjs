@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import { useHistory } from 'react-router'
 import { Menu as UikitMenu, useModal } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import { languageList } from 'config/localization/languages'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'contexts/Localization'
 import useTheme from 'hooks/useTheme'
 import config from './config'
@@ -12,10 +10,9 @@ import Profile from './Profile'
 import $ from 'jquery';
 import styled from 'styled-components'
 import useAuth from 'hooks/useAuth'
-import { ethers, Wallet, Contract } from "ethers";
+import { ethers } from "ethers";
 import contractDefinition from "../../config/abi/FlashloanMoneyLego.json"
 import { useAppDispatch } from 'state'
-import { State } from '../../state/types'
 import { setContract } from 'state/Flashloan'
 import { ApolloProvider, useMutation, useQuery } from '@apollo/client'
 import { CHECK_ACCOUNT } from 'query/general'
@@ -33,36 +30,31 @@ const Menu = (props) => {
   const { account } = useWeb3React()
   const { login, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
-  const [imgLink, setImgLink] = useState({})
-  // let profile;
+  const [imgLink, setImgLink] = useState("")
+  const [nickName, setNickName] = useState("")
   const dispatch = useAppDispatch()
-  const abi = useSelector((state: State) => state.Flashloan.contract.abi)
-  console.log("account web3", account)
+  // const abi = useSelector((state: State) => state.Flashloan.contract.abi)
   const {
     loading: fetching,  
     error,
     data: checkAccountExist = {},
-    refetch,
+    // refetch,
   } = useQuery(CHECK_ACCOUNT, {
     variables: {
         sender: account || ""
     },
     onCompleted: (data) => {
-      console.log(data)
-      setImgLink(data.account[0].avatar.original);
+      if(data && data.account && data.account[0]?.avatar.original) {
+        setImgLink(`${SERVER_API}${data.account[0].avatar.original}`);
+      setNickName(data.account[0].nickname)
+      }
     },
   });
-  // console.log("OK to create out", checkAccountExist && checkAccountExist.account && checkAccountExist.account[0].avatar.original)   
+
   const [createAccount] = useMutation(CREATE_ACCOUNT);
   useEffect(() => {
-    // if(!!checkAccountExist && checkAccountExist.account && checkAccountExist.account.length > 0) {
-    //  const imgLink = `${SERVER_API}` + checkAccountExist.account[0].avatar.original;
-    //   console.log("profile", imgLink)
-    // }
-
   const runner = async () => {
-    if(!checkAccountExist && !!account) {
-      console.log("OK to create", checkAccountExist)     
+    if(!fetching && error && !checkAccountExist && !!account) {
      try {
       await createAccount({
         variables: {
@@ -79,11 +71,11 @@ const Menu = (props) => {
     }
    }
    runner();
-  }, [checkAccountExist])
+  }, [checkAccountExist, createAccount, account, error, fetching])
   useEffect(() => {
     async function runer() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      let signer, account;
+      let signer;
       const kovan = {
         name: "kovan",
         networkID: "42",
@@ -97,7 +89,7 @@ const Menu = (props) => {
         contractDefinition.networks[kovan.networkID].address;
       try {
         // Prompt user for account connections
-        account = await provider.send("eth_requestAccounts", []);
+        // account = await provider.send("eth_requestAccounts", []);
         signer = provider.getSigner();
       } catch (err) {
         console.log(err);
@@ -118,11 +110,11 @@ const Menu = (props) => {
     }
     runer();
        //check account exist in cms
-       const data = refetch({
-        sender: account
-      });
+      //  const data = refetch({
+      //   sender: account
+      // });
       // console.log("checkAccountExist in ", checkAccountExist, data);
-  }, [account])
+  }, [account, dispatch])
   const handleClose = () => {
     close();
   }
@@ -132,6 +124,11 @@ const Menu = (props) => {
     </ApolloProvider>,
     false,
   )
+  const [onpresentProfile] = useModal(
+    <Profile payout={100} roundId={"okok"} epoch={1} />,
+    false,
+  )
+  
   useEffect(() => {
     $("#aaa > div > div:last-child  > div:first-child > div:last-child > div:first-child").css("display", "none")
     $("#aaa > div > div:last-child  > div:first-child > div:first-child > div:nth-child(6)").click(() => {
@@ -140,7 +137,7 @@ const Menu = (props) => {
     $("#aaa > div >  nav:first-child > div:last-child > div:last-child").click(() => {
       onpresentProfile()
     })
-  },[]);
+  },[onpresentReferral, onpresentProfile]);
   function reverseString(str) {
     var splitString = str.split(""); 
     var reverseArray = splitString.reverse(); 
@@ -149,13 +146,6 @@ const Menu = (props) => {
   }
   const { currentLanguage, setLanguage, t } = useTranslation()
 
- 
-
-  const [onpresentProfile] = useModal(
-    <Profile payout={100} roundId={"okok"} epoch={1} />,
-    false,
-  )
-  
   useEffect(() => {
     const Imag = () => `<img src="images/icon.ico" id="imgLogo" />`
 
@@ -197,8 +187,8 @@ const Menu = (props) => {
           cakePriceUsd={12.09}
           links={config(t)}
           profile={{
-            username: "yourname",
-            image: "",
+            username: nickName,
+            image: imgLink,
             profileLink: "/profile",
             noProfileLink: "/profile",
             showPip: true

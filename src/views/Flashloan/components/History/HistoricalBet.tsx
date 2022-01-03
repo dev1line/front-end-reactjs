@@ -1,23 +1,16 @@
 import React, { useState } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import {
   Box,
   ChevronDownIcon,
   ChevronUpIcon,
   Flex,
   IconButton,
-  PlayCircleOutlineIcon,
   Text,
-  WaitIcon,
 } from '@pancakeswap/uikit'
 import styled from 'styled-components'
-import { Bet, Flashloantatus } from 'state/types'
-import {  useGetCurrentEpoch, useGetFlashloanStatus } from 'state/hooks'
-import { getRoundResult, Result } from 'state/Flashloan/helpers'
+import { Result } from 'state/Flashloan/helpers'
 import { useTranslation } from 'contexts/Localization'
-import { formatBnb, getPayout } from '../../helpers'
 import CollectWinningsButton from '../CollectWinningsButton'
-import ReclaimPositionButton from '../ReclaimPositionButton'
 import BetDetails from './BetDetails'
 
 interface BetProps {
@@ -37,7 +30,6 @@ const YourResult = styled(Box)`
 
 const HistoricalBet: React.FC<BetProps> = ({ bet }) => {
   const [isOpen, setIsOpen] = useState(false)
-  // console.log("BET", bet)
   const { t } = useTranslation()
 
   const toggleOpen = () => setIsOpen(!isOpen)
@@ -53,18 +45,6 @@ const HistoricalBet: React.FC<BetProps> = ({ bet }) => {
       default:
         return 'text'
     }
-  }
-
-  const getRoundPrefix = (result) => {
-    if (result === Result.LOSE) {
-      return '-'
-    }
-
-    if (result === Result.WIN) {
-      return '+'
-    }
-
-    return ''
   }
 
   const roundResult = bet.profit > 0 ? Result.WIN: Result.LOSE;
