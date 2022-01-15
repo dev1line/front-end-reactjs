@@ -44,9 +44,9 @@ const Menu = (props) => {
         sender: account || ""
     },
     onCompleted: (data) => {
-      if(data && data.account && data.account[0]?.avatar.original) {
+      if(data && data.account && data.account[0]?.avatar?.original) {
         setImgLink(`${SERVER_API}${data.account[0].avatar.original}`);
-      setNickName(data.account[0].nickname)
+        setNickName(data.account[0].nickname)
       }
     },
   });
@@ -54,7 +54,7 @@ const Menu = (props) => {
   const [createAccount] = useMutation(CREATE_ACCOUNT);
   useEffect(() => {
   const runner = async () => {
-    if(!fetching && error && !checkAccountExist && !!account) {
+    if(!fetching && !error && checkAccountExist.account.length === 0 && !!account) {
      try {
       await createAccount({
         variables: {
@@ -94,7 +94,8 @@ const Menu = (props) => {
       } catch (err) {
         console.log(err);
       }
-      if (signer && (await signer.getAddress())) {
+      //(await signer.getAddress())
+      if (signer) {
      
         dispatch(setContract({
           address: contractFlashloanMoneyLegoAddress,
@@ -134,10 +135,13 @@ const Menu = (props) => {
     $("#aaa > div > div:last-child  > div:first-child > div:first-child > div:nth-child(6)").click(() => {
       onpresentReferral()
     })
-    $("#aaa > div >  nav:first-child > div:last-child > div:last-child").click(() => {
-      onpresentProfile()
-    })
-  },[onpresentReferral, onpresentProfile]);
+    $("#aaa > div >  nav:first-child > div:last-child > div:last-child > a > img").css({width: "30px", height: "30px"})
+    if(account) {
+      $("#aaa > div >  nav:first-child > div:last-child > div:last-child").click(() => {
+        onpresentProfile()
+      })
+    }
+  },[onpresentReferral, onpresentProfile, account]);
   function reverseString(str) {
     var splitString = str.split(""); 
     var reverseArray = splitString.reverse(); 

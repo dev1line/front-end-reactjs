@@ -27,7 +27,7 @@ const initialState: FlashloanState = {
   contract: {
     address: null,
     abi: null,
-    provider:null
+    provider: null
   },
   reverseCoin: {
       name: "DAI",

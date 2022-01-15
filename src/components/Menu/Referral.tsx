@@ -99,27 +99,30 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
     refetch,
   } = useQuery(CHECK_ACCOUNT);
   const {
-    loading,  
-    error: err,
+    // loading,  
+    // error: err,
     data: yourAccount = {},
-    refetch: refetcher,
-  } = useQuery(GET_YOUR_ACCOUNT);
+    // refetch: refetcher,
+  } = useQuery(GET_YOUR_ACCOUNT, {
+    variables: {
+      sender: account || ""
+  }});
   const handleClickMenu = (index) => {
     setIndex(index);
     console.log(index)
   }
-  if (account && !err && !loading) {
-    refetcher({
-      variables: {
-        sender: account || ""
-    }});
-  }
+  // if (account && !err && !loading) {
+  //   refetcher({
+  //     variables: {
+  //       sender: account || ""
+  //   }});
+  // }
   useEffect(() => {
    
-    if (account && !err && !loading) {
+    if (account) {
       setReferralCode(reverseString(account))
     }
-  }, [yourAccount, account, err, loading]);
+  }, [yourAccount, account]);
   const handleChange = (e) => {
       switch(e.target.name) {
         case "referral": {
@@ -177,7 +180,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
   }
   
 
-  console.log("yourAccount id", yourAccount)
+  // console.log("yourAccount id", yourAccount)
   const formatDate = (date) => {
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -388,7 +391,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                                   <div style={{color: 'rgb(251, 179, 9)',cursor: 'pointer', marginLeft: 8, marginBottom: 4, verticalAlign: 'middle', fontSize: 13, textAlign: 'left'}}>shib_dev{index}</div>
                                   </a>
                                   
-                                    <div color="textSubtle" font-size="11px" style={{color: 'rgb(122, 110, 170)',fontWeight: 400, lineHeight: 1.5, marginLeft: 8,  fontSize: 11}}>Public</div>
+                                    <div color="textSubtle" style={{color: 'rgb(122, 110, 170)',fontWeight: 400, lineHeight: 1.5, marginLeft: 8,  fontSize: 11}}>Public</div>
                                </Flex>
                             </Flex>                          
                           </Tdcpn>

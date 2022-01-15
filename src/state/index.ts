@@ -9,6 +9,9 @@ const store = configureStore({
   reducer: {
     Flashloan: FlashloanReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false
+  }),
 })
 
 /**

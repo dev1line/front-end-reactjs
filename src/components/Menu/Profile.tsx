@@ -103,7 +103,7 @@ const Profile: React.FC<CollectRoundWinningsModalProps> = ({
               <Text>4 - Play, win, and have fun</Text>
           </Flex>
 
-          <div style={{marginTop: 5, display:'flex', alignItems:'center'}}><div color="success" font-size="13px" font-weight="bold" style={{color: 'rgb(53, 208, 135)', lineHeight: 1.5, textTransform: 'uppercase', marginRight: 5, fontSize: 13, fontWeight: 'bold'}}>And its done !</div><svg viewBox="0 0 24 24" color="success" width="20px" xmlns="http://www.w3.org/2000/svg" style={{
+          <div style={{marginTop: 5, display:'flex', alignItems:'center'}}><div color="success"  style={{color: 'rgb(53, 208, 135)', lineHeight: 1.5, textTransform: 'uppercase', marginRight: 5, fontSize: 13, fontWeight: 'bold'}}>And its done !</div><svg viewBox="0 0 24 24" color="success" width="20px" xmlns="http://www.w3.org/2000/svg" style={{
             alignSelf: 'center',
             fill: 'rgb(53, 208, 135)',
             flexShrink: 0
