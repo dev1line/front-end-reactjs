@@ -3,12 +3,10 @@ import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { Box, Flex, Heading, Text, Button, Link, OpenNewIcon } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
-import { useGetCurrentEpoch, useGetHistoryFilter } from 'state/hooks'
-import { Bet, BetPosition, HistoryFilter, State } from 'state/types'
-import { formatBnb, getMultiplier, getPayout } from 'views/Flashloan/helpers'
-import { getRoundResult, Result } from 'state/Flashloan/helpers'
+import { Bet, HistoryFilter, State } from 'state/types'
+import { formatBnb } from 'views/Flashloan/helpers'
+
 import PnlChart from './PnlChart'
-import SummaryRow from './SummaryRow'
 import { useSelector } from 'react-redux'
 
 interface PnlTabProps {
@@ -16,24 +14,6 @@ interface PnlTabProps {
   bets: Bet[]
 }
 
-interface PnlCategory {
-  rounds: number
-  amount: number
-}
-
-interface PnlSummary {
-  won: PnlCategory & { payout: number; bestRound: { id: string; payout: number; multiplier: number } }
-  lost: PnlCategory
-  entered: PnlCategory
-}
-
-const TREASURY_FEE = 0.03
-
-const getNetPayout = (bet: Bet) => {
-  const rawPayout = getPayout(bet)
-  const fee = rawPayout * TREASURY_FEE
-  return rawPayout - fee - bet.amount
-}
 
 const Divider = styled.div`
   background-color: ${({ theme }) => theme.colors.backgroundDisabled};
@@ -42,69 +22,6 @@ const Divider = styled.div`
   width: 100%;
 `
 
-const initialPnlSummary: PnlSummary = {
-  won: {
-    rounds: 0,
-    amount: 0,
-    payout: 0, // net payout after all deductions
-    bestRound: {
-      id: '0',
-      payout: 0, // net payout after all deductions
-      multiplier: 0,
-    },
-  },
-  lost: {
-    rounds: 0,
-    amount: 0,
-  },
-  entered: {
-    rounds: 0,
-    amount: 0,
-  },
-}
-
-const getPnlSummary = (bets: Bet[], currentEpoch: number): PnlSummary => {
-  return bets.reduce((summary: PnlSummary, bet) => {
-    const roundResult = getRoundResult(bet, currentEpoch)
-    if (roundResult === Result.WIN) {
-      const payout = getNetPayout(bet)
-      let { bestRound } = summary.won
-      if (payout > bestRound.payout) {
-        const { bullAmount, bearAmount, totalAmount } = bet.round
-        const multiplier = getMultiplier(totalAmount, bet.position === BetPosition.BULL ? bullAmount : bearAmount)
-        bestRound = { id: bet.round.id, payout, multiplier }
-      }
-      return {
-        won: {
-          rounds: summary.won.rounds + 1,
-          amount: summary.won.amount + bet.amount,
-          payout: summary.won.payout + payout,
-          bestRound,
-        },
-        entered: {
-          rounds: summary.entered.rounds + 1,
-          amount: summary.entered.amount + bet.amount,
-        },
-        lost: summary.lost,
-      }
-    }
-    if (roundResult === Result.LOSE) {
-      return {
-        lost: {
-          rounds: summary.lost.rounds + 1,
-          amount: summary.lost.amount + bet.amount,
-        },
-        entered: {
-          rounds: summary.entered.rounds + 1,
-          amount: summary.entered.amount + bet.amount,
-        },
-        won: summary.won,
-      }
-    }
-    // Ignore Canceled and Live rounds
-    return summary
-  }, initialPnlSummary)
-}
 
 const PnlTab: React.FC<PnlTabProps> = ({ hasBetHistory, bets }) => {
   const { t } = useTranslation()

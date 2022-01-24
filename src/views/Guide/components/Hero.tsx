@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { Box, Heading, Text } from '@pancakeswap/uikit'
 import Container from 'components/layout/Container'
-import { useTranslation } from 'contexts/Localization'
 
 const getGradient = (isDark: boolean) => {
   if (isDark) {
@@ -24,19 +23,21 @@ const CurtainBottom = styled.div`
   background-size: contain;
   height: 20px;
 `
-
-const Hero = () => {
-  const { t } = useTranslation()
+interface PropsHero {
+  title: string
+  sub_title: string
+}
+const Hero:React.FC<PropsHero> = ({title, sub_title}) => {
 
   return (
     <Box mb="32px">
       <StyledHero>
         <Container>
           <Heading as="h1" scale="xl" mb="24px">
-            {t('IFO: Initial Farm Offerings')}
+           {title}
           </Heading>
           <Text bold fontSize="20px">
-            {t('Buy new tokens with a brand new token sale model.')}
+          {sub_title}
           </Text>
         </Container>
       </StyledHero>

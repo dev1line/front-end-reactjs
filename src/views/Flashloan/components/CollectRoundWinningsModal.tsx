@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import {
   ModalContainer,
@@ -7,22 +7,14 @@ import {
   ModalHeader,
   InjectedModalProps,
   Button,
-  AutoRenewIcon,
   TrophyGoldIcon,
   Text,
   Flex,
   Heading,
   Box,
-  LinkExternal,
   ModalCloseButton,
 } from '@pancakeswap/uikit'
-import { useWeb3React } from '@web3-react/core'
-import { useAppDispatch } from 'state'
-
-import { markBetAsCollected } from 'state/Flashloan'
 import { useTranslation } from 'contexts/Localization'
-// import useToast from 'hooks/useToast'
-// import { useFlashloanContract } from 'hooks/useContract'
 import { formatBnb } from '../helpers'
 
 interface CollectRoundWinningsModalProps extends InjectedModalProps {
@@ -51,50 +43,7 @@ const CollectRoundWinningsModal: React.FC<CollectRoundWinningsModalProps> = ({
   onDismiss,
   onSuccess,
 }) => {
-  const [isPendingTx, setIsPendingTx] = useState(false)
-  const { account } = useWeb3React()
   const { t } = useTranslation()
-  // const { toastSuccess, toastError } = useToast()
-  // const FlashloanContract = useFlashloanContract()
-
-  const dispatch = useAppDispatch()
-
-  const handleClick = () => {
-    // FlashloanContract.methods
-    //   .claim(epoch)
-    //   .send({ from: account })
-    //   .once('sending', () => {
-    //     setIsPendingTx(true)
-    //   })
-    //   .once('receipt', async (result) => {
-    //     if (onSuccess) {
-    //       await onSuccess()
-    //     }
-
-    //     dispatch(markBetAsCollected({ account, roundId }))
-    //     onDismiss()
-    //     setIsPendingTx(false)
-    //     toastSuccess(
-    //       t('Winnings collected!'),
-    //       <Box>
-    //         <Text as="p" mb="8px">
-    //           {t('Your prizes have been sent to your wallet')}
-    //         </Text>
-    //         {result.transactionHash && (
-    //           <LinkExternal href={`https://bscscan.com/tx/${result.transactionHash}`}>
-    //             {t('View on BscScan')}
-    //           </LinkExternal>
-    //         )}
-    //       </Box>,
-    //     )
-    //   })
-    //   .once('error', (error) => {
-    //     setIsPendingTx(false)
-    //     toastError(t('Error'), error?.message)
-    //     console.error(error)
-    //   })
-  }
-
   return (
     <Modal minWidth="288px" position="relative" mt="124px">
       <BunnyDecoration>
@@ -118,9 +67,6 @@ const CollectRoundWinningsModal: React.FC<CollectRoundWinningsModalProps> = ({
         <Button
           width="100%"
           mb="8px"
-          onClick={handleClick}
-          isLoading={isPendingTx}
-          endIcon={isPendingTx ? <AutoRenewIcon spin color="currentColor" /> : null}
         >
           {t('Confirm')}
         </Button>

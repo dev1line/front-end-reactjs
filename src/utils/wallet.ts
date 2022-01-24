@@ -11,6 +11,7 @@ export const setupNetwork = async () => {
   if (provider) {
     const chainId = parseInt(process.env.REACT_APP_CHAIN_ID, 10)
     try {
+      // await (window as WindowChain).enable();
       await provider.request({
         method: 'wallet_addEthereumChain',
         params: [
@@ -33,7 +34,7 @@ export const setupNetwork = async () => {
       return false
     }
   } else {
-    console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
+    console.error("Can't setup the KOVAN network on metamask because window.ethereum is undefined")
     return false
   }
 }
@@ -66,4 +67,15 @@ export const registerToken = async (
   })
 
   return tokenAdded
+}
+
+export const switchNetwork = async () => {
+  await (window as WindowChain).ethereum.request({
+    method: 'wallet_switchEthereumChain',
+    params: [{ chainId: '0x2A' }], // chainId must be in hexadecimal numbers
+  });
+}
+
+export const requestAccount = async () => {
+  await (window as WindowChain).ethereum.request({ method: 'eth_requestAccounts' })
 }

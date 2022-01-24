@@ -18,7 +18,7 @@ const PrizesCard = () => {
     <StyledCard>
       <CardHeader>
         <Heading scale="lg" color="secondary">
-          {t('Prizes by Team')}
+         Ranking
         </Heading>
         <Text color="textSubtle" fontSize="14px">
           {t('Higher trading volume = higher rank!')}
@@ -27,9 +27,9 @@ const PrizesCard = () => {
       <PrizesGrid />
       <Box p="24px">
         <Text color="textSubtle" fontSize="14px">
-          {t(
-            'Prizes to be distributed in CAKE and shared by all members of a tier. CAKE price in USD to be determined on the day of distribution. Details below.',
-          )}
+        
+            Prizes to be distributed in ITF token and shared by all members of a tier. ITF token price in USD to be determined on the day of distribution. Details below.
+       
         </Text>
       </Box>
     </StyledCard>

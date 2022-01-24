@@ -2,18 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 import every from 'lodash/every'
 import { Stepper, Step, StepStatus, Card, CardBody, Heading, Text, Button, Link, OpenNewIcon } from '@pancakeswap/uikit'
-import { BASE_ADD_LIQUIDITY_URL } from 'config'
 import { Ifo } from 'config/constants/types'
-import { WalletIfoData } from 'hooks/ifo/types'
 import { useTranslation } from 'contexts/Localization'
-// import useTokenBalance from 'hooks/useTokenBalance'
 import Container from 'components/layout/Container'
-// import { useProfile } from 'state/hooks'
-// import { getAddress } from 'utils/addressHelpers'
-
 interface Props {
   ifo: Ifo
-  walletIfoData: WalletIfoData
 }
 
 const Wrapper = styled(Container)`
@@ -29,16 +22,13 @@ const Wrapper = styled(Container)`
   }
 `
 
-const Guideteps: React.FC<Props> = ({ ifo, walletIfoData }) => {
-  
-  // const { hasProfile } = useProfile()
+const Guideteps: React.FC<Props> = ({ ifo }) => {
   const { t } = useTranslation()
-  // const balance = useTokenBalance(getAddress(ifo.currency.address))
   const stepsValidationStatus = [
     true,
    true,
    1,
-2
+    2
   ]
 
   const getStatusProp = (index: number): StepStatus => {
@@ -50,46 +40,35 @@ const Guideteps: React.FC<Props> = ({ ifo, walletIfoData }) => {
   }
 
   const renderCardBody = (step: number) => {
-    const isStepValid = stepsValidationStatus[step]
     switch (step) {
       case 0:
         return (
           <CardBody>
             <Heading as="h4" color="secondary" mb="16px">
-              {t('Activate your Profile')}
+              {t('Activate your Wallet')}
             </Heading>
             <Text color="textSubtle" small mb="16px">
-              {t('You’ll need an active PancakeSwap Profile to take part in an IFO!')}
+              {t('You’ll need an active Ethereum Wallet to take part in a simple flashloan!')}
             </Text>
-            {isStepValid ? (
-              <Text color="success" bold>
-                {t('Profile Active!')}
-              </Text>
-            ) : (
-              <Button as={Link} href="/profile">
-                {t('Activate your Profile')}
-              </Button>
-            )}
           </CardBody>
         )
       case 1:
         return (
           <CardBody>
             <Heading as="h4" color="secondary" mb="16px">
-              {t('Get CAKE-BNB LP Tokens')}
+              {t('Get a little ETH into your wallet')}
             </Heading>
             <Text color="textSubtle" small>
-              {t('Stake CAKE and BNB in the liquidity pool to get LP tokens.')} <br />
-              {t('You’ll spend them to buy IFO sale tokens.')}
+              {t('You’ll get more ETH in this below link')}
             </Text>
             <Button
               as={Link}
               external
-              href={`${BASE_ADD_LIQUIDITY_URL}/BNB/0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82`}
+              href={`https://faucets.chain.link/`}
               endIcon={<OpenNewIcon color="white" />}
               mt="16px"
             >
-              {t('Get LP tokens')}
+              {t('Get ETH in testnet')}
             </Button>
           </CardBody>
         )
@@ -97,11 +76,14 @@ const Guideteps: React.FC<Props> = ({ ifo, walletIfoData }) => {
         return (
           <CardBody>
             <Heading as="h4" color="secondary" mb="16px">
-              {t('Commit LP Tokens')}
+              {t('Open Flashloan tab and initiate a flashloan')}
             </Heading>
             <Text color="textSubtle" small>
-              {t('When the IFO sales are live, you can “commit” your LP tokens to buy the tokens being sold.')} <br />
-              {t('We recommend committing to the Basic Sale first, but you can do both if you want.')}
+              {t('Create a loan that you need')} <br />
+              {t('Add actions to use your loan wisely')} <br />
+              {t('Edit exchanges and tokens you want reasonably')} <br />
+              {t('Approve token input if token do not approve before')} <br />
+              {t('Start flashloan')} <br />
             </Text>
           </CardBody>
         )
@@ -113,8 +95,9 @@ const Guideteps: React.FC<Props> = ({ ifo, walletIfoData }) => {
             </Heading>
             <Text color="textSubtle" small>
               {t(
-                'After the IFO sales finish, you can claim any IFO tokens that you bought, and any unspent CAKE-BNB LP tokens will be returned to your wallet.',
-              )}
+                'After transaction success, you can claim a profit',
+              )}  <br />
+                 {t('If it fail, you only lost a little fee to create protocol for loan')} <br />
             </Text>
           </CardBody>
         )

@@ -41,24 +41,7 @@ const useGetWalletIfoData = (ifo: Ifo): WalletIfoData => {
   // const currencyContract = useERC20(getAddress(currency.address))
   // const allowance = useIfoAllowance(currencyContract, address)
 
-  const setPendingTx = (status: boolean, poolId: PoolIds) =>
-    setState((prevState) => ({
-      ...prevState,
-      [poolId]: {
-        ...prevState[poolId],
-        isPendingTx: status,
-      },
-    }))
 
-  const setIsClaimed = (poolId: PoolIds) => {
-    setState((prevState) => ({
-      ...prevState,
-      [poolId]: {
-        ...prevState[poolId],
-        hasClaimed: true,
-      },
-    }))
-  }
 
 
   return;

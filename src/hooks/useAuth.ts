@@ -16,7 +16,7 @@ import useToast from 'hooks/useToast'
 import useWeb3 from 'hooks/useWeb3'
 // import { useAppDispatch } from 'state'
 import { useTranslation } from 'contexts/Localization'
-import { setupNetwork } from 'utils/wallet'
+import { setupNetwork, switchNetwork, requestAccount } from 'utils/wallet'
 import { connectorsByName } from 'utils/web3React'
 
 const useAuth = () => {
@@ -28,9 +28,11 @@ const useAuth = () => {
   const login = useCallback((connectorID: ConnectorNames) => {
     const connector = connectorsByName[connectorID]
    
-    // console.log("connector", connector,connectorID, web3)
+    console.log("connector", connector,connectorID, web3)
     if (connector) {
+      requestAccount();
       activate(connector, async (error: Error) => {
+      
         if (error instanceof UnsupportedChainIdError) {
           const hasSetup = await setupNetwork()
           if (hasSetup) {
@@ -53,6 +55,8 @@ const useAuth = () => {
             toastError(error.name, error.message)
           }
         }
+        const data = await switchNetwork();
+        console.log("data", data)
       })
     } else {
       toastError(t('Can’t find connector'), t('The connector config is wrong'))
@@ -62,6 +66,7 @@ const useAuth = () => {
 
   const logout = useCallback(() => {
     deactivate()
+    window.location.reload()
   }, [deactivate])
 
   return { login, logout }

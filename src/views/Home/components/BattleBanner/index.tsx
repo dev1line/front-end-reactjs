@@ -1,13 +1,13 @@
 import React from 'react'
 import { Flex, Text, Heading, Image } from '@pancakeswap/uikit'
 import styled from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
 import AllBunniesImage from '../../pngs/all-bunnies.png'
-import { Heading1Text, Heading2Text } from '../CompetitionHeadingText'
+import { Heading2Text } from '../CompetitionHeadingText'
 import { GOLDGRADIENT } from '../Section/sectionStyles'
 
 const TextStyles = (theme) => `
   text-align: center;
+  
   ${theme.mediaQueries.md} {
     text-align: left;
   }
@@ -25,10 +25,6 @@ const StyledText = styled(Text)`
   ${({ theme }) => TextStyles(theme)}
 `
 
-const StyledHeading1Text = styled(Heading1Text)`
-  ${({ theme }) => TextStyles(theme)}
-`
-
 const StyledHeading2Text = styled(Heading2Text)`
   ${({ theme }) => TextStyles(theme)}
 `
@@ -38,21 +34,19 @@ const StyledHeading = styled(Heading)`
 `
 
 const BattleBanner = () => {
-  const { t } = useTranslation()
   return (
     <Flex flexDirection="column">
-      <ImageWrapper>
+       <ImageWrapper>
         <Image src={AllBunniesImage} alt="all the bunnies" width={1208} height={659} responsive />
       </ImageWrapper>
       <StyledText mb="16px" color="textSubtle" bold>
-        {t('April')} 07—14, 2021
+        Start: October 01, 2021 End: January 30, 2022
       </StyledText>
-      <StyledHeading1Text>{t('Easter Battle')}</StyledHeading1Text>
       <StyledHeading2Text background={GOLDGRADIENT} $fill>
-        {t('$200,000 in Prizes!')}
+       ITF Flashloan
       </StyledHeading2Text>
       <StyledHeading scale="md" color="inputSecondary" mt="16px">
-        {t('Compete with other teams to win CAKE, collectible NFTs, achievements & more!')}
+        This is how to borrow money without collateral on blockchain platform
       </StyledHeading>
     </Flex>
   )

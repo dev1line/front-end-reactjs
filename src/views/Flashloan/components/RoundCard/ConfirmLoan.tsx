@@ -7,22 +7,12 @@ import {
   ModalHeader,
   InjectedModalProps,
   Button,
-Input,
+  Input,
   Text,
   Flex,
   Heading,
-  Box,
-  LinkExternal,
   ModalCloseButton,
 } from '@pancakeswap/uikit'
-import { useWeb3React } from '@web3-react/core'
-import { useAppDispatch } from 'state'
-
-import { markBetAsCollected } from 'state/Flashloan'
-import { useTranslation } from 'contexts/Localization'
-// import useToast from 'hooks/useToast'
-// import { useFlashloanContract } from 'hooks/useContract'
-
 interface ConfirmLoanProps extends InjectedModalProps {
   loan: number
   token: any
@@ -34,18 +24,6 @@ const Modal = styled(ModalContainer)`
   overflow: visible;
 `
 
-const BunnyDecoration = styled.div`
-  position: absolute;
-  top: -116px; // line up bunny at the top of the modal
-  left: 0px;
-  text-align: center;
-  width: 100%;
-`
-const Wrapper = styled.div`
-    display: flex;
-    justify-content:space-around;
-    align-items:center;
-`
 const Image = styled.img`
     // margin-right: 14px;
 `

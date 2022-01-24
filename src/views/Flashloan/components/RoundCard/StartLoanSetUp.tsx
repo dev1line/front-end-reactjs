@@ -1,18 +1,15 @@
 import React, {useState} from 'react'
 import styled from 'styled-components'
-import { useWeb3React } from '@web3-react/core'
-import { Box, Input, CardBody, Button ,Text, PlayCircleOutlineIcon, useModal } from '@pancakeswap/uikit'
+import { Box, Input, CardBody, Button , PlayCircleOutlineIcon, useModal } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import Card from './Card'
 import CardHeader from './CardHeader'
 import ConfirmLoan from './ConfirmLoan'
-import SelectCoin from './SelectCoin'
 import tokens from 'config/constants/tokens'
 import { State, StatusBlock } from 'state/types'
 import { setLoan, setReverseCoin, setSwiperList } from 'state/Flashloan' 
 import { useAppDispatch } from 'state'
 import { useSelector } from 'react-redux'
-import { numberOrNull } from 'state/Flashloan/helpers'
 const StyledStartLoanSetUp = styled(Card)`
   opacity: 0.7;
   transition: opacity 300ms;
@@ -21,17 +18,11 @@ const StyledStartLoanSetUp = styled(Card)`
     opacity: 1;
   }
 `
-const Image = styled.img`
-   width:20px;
-   height:20px;
-`
-
 interface PropsStart {
   block: any
 }
 const StartLoanSetUp: React.FC<PropsStart> = ({block}) => {
   const { t } = useTranslation()
-  const { account } = useWeb3React()
   const loan = useSelector((state:State) => state.Flashloan.swiperList[0].loan)
   console.log("loan", loan)
   const [amount, setAmount] = useState(0)
@@ -45,7 +36,7 @@ const StartLoanSetUp: React.FC<PropsStart> = ({block}) => {
   }
   const delZero = (num:string) => {
     const arr = num.split('');
-    const index = arr.findIndex(a => a != "0");
+    const index = arr.findIndex(a => a !== "0");
     return parseInt(num.slice(index));
   }
   const handleConfirm = (e, amount) => {
@@ -74,12 +65,12 @@ const StartLoanSetUp: React.FC<PropsStart> = ({block}) => {
     setReverse(item);
     dispatch(setReverseCoin(item));
     const ExList = swiperList.map((ii, index) => {
-      if(ii.type == StatusBlock.START) return {
+      if(ii.type === StatusBlock.START) return {
         type: ii.type,
         loan: ii.loan,
         token: item
       };
-      if(ii.type != StatusBlock.EXCHANGE) return ii;
+      if(ii.type !== StatusBlock.EXCHANGE) return ii;
   return (ii?.refund) ?
          {
           type: ii.type,
@@ -88,7 +79,7 @@ const StartLoanSetUp: React.FC<PropsStart> = ({block}) => {
           tokenOut : item,
           exchange: ii.exchange
         }
-    : (index == 1) ?
+    : (index === 1) ?
        {
         type: ii.type,
         refund: ii.refund,

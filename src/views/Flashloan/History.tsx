@@ -4,22 +4,10 @@ import { useWeb3React } from '@web3-react/core'
 import styled from 'styled-components'
 import UnlockButton from 'components/UnlockButton'
 import { useTranslation } from 'contexts/Localization'
-import { getUnclaimedWinningBets } from 'state/Flashloan/helpers'
-import { HistoryFilter } from 'state/types'
 import { useAppDispatch } from 'state'
-import {
-  useGetCurrentEpoch,
-  useGetHistoryByAccount,
-  useGetHistoryFilter,
-  // useGetIsFetchingHistory,
-  useIsHistoryPaneOpen,
-} from 'state/hooks'
 import { Header, HistoryTabs } from './components/History'
 import RoundsTab from './components/History/RoundsTab'
 import PnlTab from './components/History/PnlTab/PnlTab'
-
-import { Button, useModal } from '@pancakeswap/uikit'
-import CollectRoundWinningsModal from './components/CollectRoundWinningsModal'
 import { useQuery } from '@apollo/client'
 import { ALL_HISTORY } from 'query/general'
 import { setHistory } from 'state/Flashloan'
@@ -59,25 +47,19 @@ const History = () => {
     loading: fetching,  
     error,
     data: historyData = {},
-    refetch,
+    // refetch,
   } = useQuery(ALL_HISTORY, {
     variables: {
         sender: account
     }
-  });
-  console.log("historyData", historyData?.histories)
-  
+  });  
   useEffect(() => {
-    if (historyData?.histories && historyData?.histories.length > 0) {
+    if (!error && historyData?.histories && historyData?.histories.length > 0) {
 
       dispatch(setHistory(JSON.parse(JSON.stringify(historyData?.histories))))
     }
-  },[historyData])
-
-  // Currently the api cannot filter by unclaimed AND won so we do it here
-  // when the user has selected Uncollected only include positions they won
+  },[historyData, dispatch, error])
   const results = historyData.histories && historyData?.histories[0];
-  // historyFilter === HistoryFilter.FAIL ? getUnclaimedWinningBets(bets) : bets
 
   const hasBetHistory = results && results.length > 0
 
@@ -97,15 +79,10 @@ const History = () => {
     activeTabComponent = (
       <Flex justifyContent="center" alignItems="center" flexDirection="column" mt="32px">
         <UnlockButton />
-        <Text mt="8px">{t('Connect your wallet to view your prediction history')}</Text>
+        <Text mt="8px">{t('Connect your wallet to view your transaction history')}</Text>
       </Flex>
     )
   }
-
-  const [onPresentCollectWinningsModal] = useModal(
-    <CollectRoundWinningsModal  payout={100} roundId={"okok"} epoch={1} />,
-    false,
-  )
 
   return (
     <StyledHistory style={{paddingTop: document.documentElement.clientWidth > 768 ? 74: ""}}>

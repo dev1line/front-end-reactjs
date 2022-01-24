@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import {
   ModalContainer,
@@ -7,28 +7,15 @@ import {
   ModalHeader,
   InjectedModalProps,
   Button,
-  AutoRenewIcon,
-  TrophyGoldIcon,
   Text,
   Flex,
   Heading,
   Box,
-  LinkExternal,
   ModalCloseButton,
-  ArrowForwardIcon,
   Spinner,
   SyncAltIcon,
 } from '@pancakeswap/uikit'
-import { useWeb3React } from '@web3-react/core'
-import { useAppDispatch } from 'state'
-
-import { markBetAsCollected, setLoading } from 'state/Flashloan'
-import { useTranslation } from 'contexts/Localization'
 import { State, StatusBlock } from 'state/types'
-// import useToast from 'hooks/useToast'
-// import { useFlashloanContract } from 'hooks/useContract'
-import { useMutation } from "@apollo/client";
-import { CREATE_HISTORY } from 'query/mutation'
 import { useSelector } from 'react-redux'
 
 interface ConfirmFlashProps extends InjectedModalProps {
@@ -40,11 +27,7 @@ interface ConfirmFlashProps extends InjectedModalProps {
 const Modal = styled(ModalContainer)`
   overflow: visible;
 `
-const Wrapper = styled.div`
-    display: flex;
-    justify-content:space-around;
-    align-items:center;
-`
+
 const Image = styled.img`
     // margin-right: 14px;
 `
@@ -61,10 +44,8 @@ const SpinnerWrapper = styled.div`
   border-radius: 38px;
 `
 const ConfirmFlash: React.FC<ConfirmFlashProps> = ({ data, onDismiss, onSuccess, onConfirm}) => {
-  const dispatch = useAppDispatch();
   const isLoading = useSelector((state: State) => state.Flashloan.isLoading);
- 
-  const ExList = data.filter(i => i.type == StatusBlock.EXCHANGE)
+  const ExList = data.filter(i => i.type === StatusBlock.EXCHANGE)
   console.log("ExList", ExList)
   return (
     <Modal minWidth="288px" position="relative" mt="124px">   

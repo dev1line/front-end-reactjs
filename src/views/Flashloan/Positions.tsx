@@ -71,7 +71,7 @@ const Positions: React.FC = () => {
     toastError(`An transaction fail in `, `${tx}`)
     }
 
-    const swiperListExchange = swiperList.filter(e => e.type == StatusBlock.EXCHANGE).map(item => (
+    const swiperListExchange = swiperList.filter(e => e.type === StatusBlock.EXCHANGE).map(item => (
       [item.tokenIn.address, item.tokenOut.address, item.exchange.address, item.exchange.version - 1]
     ));
       const data = [
@@ -129,11 +129,11 @@ const Positions: React.FC = () => {
   });
   console.log("historyData", historyData?.histories)
   useEffect(() => {
-    if (historyData?.histories && historyData?.histories.length > 0) {
+    if (!fetching && !error && historyData?.histories && historyData?.histories.length > 0) {
 
       dispatch(setHistory(JSON.parse(JSON.stringify(historyData?.histories))))
     }
-  },[historyData])
+  },[historyData, dispatch, fetching, error])
   return (
     <Box overflow="hidden" >
       { document.documentElement.clientWidth > 768 ? 

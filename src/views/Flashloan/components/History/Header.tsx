@@ -43,18 +43,6 @@ const ButtonMenuContainer = styled.div`
   }
 `
 
-const getClaimParam = (historyFilter: HistoryFilter) => {
-  switch (historyFilter) {
-    case HistoryFilter.SUCESS:
-      return true
-    case HistoryFilter.FAIL:
-      return false
-    case HistoryFilter.ALL:
-    default:
-      return undefined
-  }
-}
-
 interface HeaderProps {
   activeTab: HistoryTabs
   setActiveTab: (value: HistoryTabs) => void

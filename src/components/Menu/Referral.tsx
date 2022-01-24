@@ -87,15 +87,42 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
 }) => {
   const [index, setIndex] = useState(0);  
   const {account} = useWeb3React();
-  const [referralCode, setReferralCode] = useState(reverseString(account));
+  const [referralCode, setReferralCode] = useState(account ? reverseString(account): "");
   const [referralCodeFrom, setReferralCodeFrom] = useState("");
   const [isCopied, setIsCopied] = useState(false);
   const [createReferral] = useMutation(CREATE_REFERRAL);
   const [isHide, setIsHide] = useState(false);
+  const {
+    loading: fetching,  
+    error,
+    data: checkAccountExist = {},
+    refetch,
+  } = useQuery(CHECK_ACCOUNT);
+  const {
+    // loading,  
+    // error: err,
+    data: yourAccount = {},
+    // refetch: refetcher,
+  } = useQuery(GET_YOUR_ACCOUNT, {
+    variables: {
+      sender: account || ""
+  }});
   const handleClickMenu = (index) => {
     setIndex(index);
     console.log(index)
   }
+  // if (account && !err && !loading) {
+  //   refetcher({
+  //     variables: {
+  //       sender: account || ""
+  //   }});
+  // }
+  useEffect(() => {
+   
+    if (account) {
+      setReferralCode(reverseString(account))
+    }
+  }, [yourAccount, account]);
   const handleChange = (e) => {
       switch(e.target.name) {
         case "referral": {
@@ -110,20 +137,10 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
       }
   }
   function reverseString(str) {
-    // Step 1. Use the split() method to return a new array
-    var splitString = str.split(""); // var splitString = "hello".split("");
-    // ["h", "e", "l", "l", "o"]
- 
-    // Step 2. Use the reverse() method to reverse the new created array
-    var reverseArray = splitString.reverse(); // var reverseArray = ["h", "e", "l", "l", "o"].reverse();
-    // ["o", "l", "l", "e", "h"]
- 
-    // Step 3. Use the join() method to join all elements of the array into a string
-    var joinArray = reverseArray.join(""); // var joinArray = ["o", "l", "l", "e", "h"].join("");
-    // "olleh"
-    
-    //Step 4. Return the reversed string
-    return joinArray; // "olleh"
+    var splitString = str.split(""); 
+    var reverseArray = splitString.reverse(); 
+    var joinArray = reverseArray.join(""); 
+    return joinArray; 
 }
   const handleCopy = () => {
     function copyToClipboard(textToCopy) {
@@ -161,27 +178,9 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
     })
     .catch(() => console.log('error'));
   }
-  const {
-    loading: fetching,  
-    error,
-    data: checkAccountExist = {},
-    refetch,
-  } = useQuery(CHECK_ACCOUNT);
-  const {
-    loading,  
-    error: err,
-    data: yourAccount = {},
-    refetch: refetcher,
-  } = useQuery(GET_YOUR_ACCOUNT);
+  
 
-  useEffect(() => {
-    refetcher({
-      variables: {
-        sender: account || ""
-    }
-  });
-  }, []);
-  console.log("yourAccount id", yourAccount)
+  // console.log("yourAccount id", yourAccount)
   const formatDate = (date) => {
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -202,7 +201,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
         sender:reverseString(referralCodeFrom) || ""
     }
     });
-    if(checkAccountExist?.account?.length == 0) {
+    if(!fetching && !error && checkAccountExist?.account?.length === 0) {
       //return not found referralcode
       console.log("account not found 1", reverseString(referralCodeFrom))
       return;
@@ -300,10 +299,10 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                     <tbody>
                       {Array.from({length: 10}, (item, index) => (
                           <tr key={index} style={{ fontSize:10, padding: '3px 4px', boxShadow: '0px -1px 0px 0px rgb(14 14 44 / 40%) inset', borderRadius: 7}}>
-                            <Tdcpn width="30%">Wallet</Tdcpn>
-                            <Tdcpn width="20%">Bets</Tdcpn>
-                            <Tdcpn>volume(BNB)</Tdcpn>
-                            <Tdcpn>Revenue%1</Tdcpn>
+                            <Tdcpn width="30%">0x..74{index + 2 % 21 + 10}</Tdcpn>
+                            <Tdcpn width="20%">{index%3 === 0 ? "true" : "false"}</Tdcpn>
+                            <Tdcpn>{index%3 *4**2}</Tdcpn>
+                            <Tdcpn>{(index%3 *4**2)/100}</Tdcpn>
                         </tr>
                       ))}          
                     </tbody>
@@ -327,9 +326,9 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                     <tbody>
                       {Array.from({length: 10}, (item, index) => (
                         <tr key={index} style={{ fontSize:10, padding: '3px 4px', boxShadow: '0px -1px 0px 0px rgb(14 14 44 / 40%) inset', borderRadius: 7}}>
-                          <Tdcpn width="50%">Date</Tdcpn>
-                          <Tdcpn>Amount</Tdcpn>
-                          <Tdcpn>Hash</Tdcpn>  
+                          <Tdcpn width="50%">{index % 31}-1-2022</Tdcpn>
+                          <Tdcpn>{(index + 0.02*index).toFixed(2)}</Tdcpn>
+                          <Tdcpn>0x..{index % 20 + 10}</Tdcpn>  
                         </tr>
                       ))} 
                     </tbody>   
@@ -340,7 +339,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                 <Text>Total Revenue</Text>
                 <Wrapper>
                   <Box style={{ textAlign: 'right' }}>
-                      <Text>{`${(payout)} BNB`}</Text>
+                      <Text>{`${(100)} BNB`}</Text>
                   </Box>
                   <Image src="/images/bscicon.svg" />
                 </Wrapper>
@@ -350,7 +349,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                 <Text>Total Paid</Text>
                 <Wrapper>
                   <Box style={{ textAlign: 'right' }}>
-                      <Text>{`${(payout)} BNB`}</Text>
+                      <Text>{`${(120)} BNB`}</Text>
                   </Box>
                   <Image src="/images/bscicon.svg" />
                 </Wrapper>
@@ -360,7 +359,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                 <Text>Pending Balnce</Text>
                 <Wrapper>
                   <Box style={{ textAlign: 'right', fontWeight:'bold' }}>
-                      <Text>{`${(payout)} BNB`}</Text>
+                      <Text>{`${(112)} BNB`}</Text>
                   </Box>
                   <Image src="/images/bscicon.svg" />
                 </Wrapper>
@@ -389,10 +388,10 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                                 <Image src="https://candlegenie.io/images/profileplaceholder.jpg" width="36px" height="36px" style={{ background: 'linear-gradient(rgb(255, 216, 0) 0%, rgb(253, 171, 50) 100%)', borderRadius: '50%', padding:2}}/>
                                <Flex flexDirection="column" >
                                   <a href="https://bscscan.com/address/0x078bb52f3fd53cde7ab15fe831da9b55e3c702fa" target="_blank" rel="noopener noreferrer">
-                                  <div style={{color: 'rgb(251, 179, 9)',cursor: 'pointer', marginLeft: 8, marginBottom: 4, verticalAlign: 'middle', fontSize: 13, textAlign: 'left'}}>shibanova_dev</div>
+                                  <div style={{color: 'rgb(251, 179, 9)',cursor: 'pointer', marginLeft: 8, marginBottom: 4, verticalAlign: 'middle', fontSize: 13, textAlign: 'left'}}>shib_dev{index}</div>
                                   </a>
                                   
-                                    <div color="textSubtle" font-size="11px" style={{color: 'rgb(122, 110, 170)',fontWeight: 400, lineHeight: 1.5, marginLeft: 8,  fontSize: 11}}>Public</div>
+                                    <div color="textSubtle" style={{color: 'rgb(122, 110, 170)',fontWeight: 400, lineHeight: 1.5, marginLeft: 8,  fontSize: 11}}>Public</div>
                                </Flex>
                             </Flex>                          
                           </Tdcpn>
@@ -407,7 +406,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                 <Text>Distributed Payments</Text>
                 <Wrapper>
                   <Box style={{ textAlign: 'right' }}>
-                      <Text>{`${(payout)} BNB`}</Text>
+                      <Text>{`${(115)} BNB`}</Text>
                   </Box>
                   <Image src="/images/bscicon.svg" />
                 </Wrapper>

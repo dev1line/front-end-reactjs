@@ -62,28 +62,27 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
       setNickname(e.target.value);
   }
   const [media, setMedia] = useState("");
-  const [mediaErr, setMediaErr] = useState(false);
   const {account} = useWeb3React();
   const { toastError, toastSuccess, toastWarning } = useToast()
   
   const { loading: fetching,  
     error,
     data: yourProfile = {},
-    refetch } = useQuery( GET_YOUR_ACCOUNT);
+    refetch } = useQuery( GET_YOUR_ACCOUNT, {
+      variables: {
+        sender: account || ""
+      }
+    });
     useEffect(() => {
-      refetch({
-        variables: {
-          sender: account || ""
-        }
-      });
-    }, []);
+      refetch();
+    }, [refetch, account]);
+
     useEffect(() => {
-      yourProfile &&  yourProfile.account && setNickname(yourProfile.account[0].nickname);
+      yourProfile &&  yourProfile.account && setNickname(yourProfile.account[0]?.nickname);
     }, [yourProfile]);
-    yourProfile &&  yourProfile.account && console.log("Your profile", yourProfile, yourProfile.account[0].avatar?.original)
-  const [updateProfile, {}] = useMutation(UPDATE_PROFILE);
+    yourProfile &&  yourProfile.account && console.log("Your profile", yourProfile, yourProfile.account[0]?.avatar?.original)
+  const [updateProfile] = useMutation(UPDATE_PROFILE);
   const handleChangeAvatar = () => {
-    const fileUploader = document.getElementById('file-uploader');
     document.getElementById("lb-upload").click();
   }
   const handleChangeSelect = (e) => {
@@ -106,11 +105,10 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
     }
 
     setMedia(file);
-    setMediaErr(false);
+
   }
 
   const onSubmit = async () => {
-    let updateData = {};
     if (media) {
       let rs = undefined;
       try {
@@ -120,7 +118,7 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
           toastError("Upload image is Fail !")
       }  
 
-      if(yourProfile && rs) {
+      if(!error && !fetching && yourProfile && rs) {
         updateProfile({
           variables: {
             data: {
@@ -132,20 +130,20 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
                 }
               }
             },
-            id: yourProfile?.account[0].id
+            id: yourProfile?.account[0]?.id
           },
         });
         toastSuccess("Update Profile successfully")
       }  
     }
 
-    if(yourProfile &&  yourProfile.account && nickname != yourProfile.account[0].nickname ) {
+    if(yourProfile && yourProfile.account && nickname !== yourProfile.account[0]?.nickname ) {
       updateProfile({
         variables: {
           data: {
             nickname
           },
-          id: yourProfile?.account[0].id
+          id: yourProfile?.account[0]?.id
         },
       });
       toastSuccess("Update Profile successfully")
@@ -177,7 +175,7 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
                     fontSize: 12,
                     fontWeight: 'bold'}}>Profile Picture</Heading>
            
-                <Image src={ avatar.picture ? avatar.src : (( yourProfile &&  yourProfile.account && yourProfile?.account[0].avatar?.original) ? SERVER_API + yourProfile?.account[0].avatar?.original : "https://candlegenie.io/images/profileplaceholder.jpg")}  style={{ background: 'linear-gradient(rgb(255, 216, 0) 0%, rgb(253, 171, 50) 100%)', borderRadius: '50%', padding:2, width:"100px", height:"100px"}}/>
+                <Image src={ avatar.picture ? avatar.src : (( yourProfile &&  yourProfile.account && yourProfile?.account[0]?.avatar?.original) ? SERVER_API + yourProfile?.account[0]?.avatar?.original : "https://candlegenie.io/images/profileplaceholder.jpg")}  style={{ background: 'linear-gradient(rgb(255, 216, 0) 0%, rgb(253, 171, 50) 100%)', borderRadius: '50%', padding:2, width:"100px", height:"100px"}}/>
                 
                 <Text style={{
                     color: 'rgb(118, 69, 217)',
@@ -199,7 +197,7 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
                             fontWeight: 'bold'
                         }}>Nick Name</Heading>
                         <Input type="text" value={nickname} onChange={handleChange} />
-                        <Flex mt="20px" mb="88px">
+                        <Flex mt="20px" mb="88px" style={{visibility:'hidden'}}>
                             <Checkbox scale="sm" />
                             <Text style={{marginLeft: 5}}>Hide me from the leaderboards</Text>
                         </Flex>

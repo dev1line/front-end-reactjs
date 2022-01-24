@@ -10,7 +10,6 @@ import { setChartPaneState } from 'state/Flashloan'
 import { Flashloantatus } from 'state/types'
 import { useTranslation } from 'contexts/Localization'
 import TradingView from './components/TradingView'
-import { ErrorNotification, PauseNotification } from './components/Notification'
 import History from './History'
 import Positions from './Positions'
 
@@ -166,8 +165,8 @@ const Desktop: React.FC = () => {
       <StyledDesktop>
         <SplitWrapper ref={splitWrapperRef}>
           <PositionPane>
-            {status === Flashloantatus.ERROR && <ErrorNotification />}
-            {status === Flashloantatus.PAUSED && <PauseNotification />}
+            {/* {status === Flashloantatus.ERROR && <ErrorNotification />}
+            {status === Flashloantatus.PAUSED && <PauseNotification />} */}
             {status === Flashloantatus.LIVE && (
               <div>
                 <Positions />
