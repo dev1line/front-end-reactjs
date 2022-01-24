@@ -8,5 +8,5 @@ const apiEnv = {
   production: 'https://cms-keystonejs.herokuapp.com'
 }
 
-export const API_CMS = apiEnv['dev']
-export const SERVER_API = `http://localhost:3001`
+export const API_CMS = apiEnv[ENVIRONMENT]
+export const SERVER_API = `https://cms-keystonejs.herokuapp.com`
