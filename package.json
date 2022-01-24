@@ -1,10 +1,10 @@
 {
-  "name": "pancake-frontend",
+  "name": "front-end-reactjs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "react-scripts start",
+    "start": "serve -s build",
     "build": "react-scripts build CI=false",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
