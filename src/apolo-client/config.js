@@ -1,4 +1,4 @@
-export const ENVIRONMENT = 'dev'
+// export const ENVIRONMENT = 'dev'
 export const ENVIRONMENT = 'production'
 const HOST = 'localhost' //'cms-keystonejs.herokuapp.com' //'54.159.116.102'
 const PORT = process.env.PORT || '3001'
