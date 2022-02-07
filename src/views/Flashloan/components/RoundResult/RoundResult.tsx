@@ -1,7 +1,6 @@
 import React from 'react'
-import { BinanceIcon, Box, BoxProps, Flex, SyncAltIcon, Text } from '@pancakeswap/uikit'
+import { Box, BoxProps, Flex, SyncAltIcon, Text } from '@pancakeswap/uikit'
 import { BetPosition, StatusBlock } from 'state/types'
-import { formatUsd } from '../../helpers'
 import PositionTag from '../PositionTag'
 import { RoundResultBox } from './styles'
 import styled from 'styled-components'
@@ -38,13 +37,21 @@ const RoundResult: React.FC<RoundResultProps> = ({ round, children, ...props }) 
       </Flex>
 
         <Flex alignItems="center" justifyContent="space-between" mb="16px">
-          <Flex>
-          <Text color={isPositionUp ? 'success' : 'failure'} bold fontSize="24px">
-            {parseInt(swiperList[0].loan).toFixed(2)}
-          </Text>
-          <BinanceIcon width="20px" ml="5px"/>
+          <Flex display="flex" alignItems="center">
+            <Text color={isPositionUp ? 'success' : 'failure'} bold fontSize="24px">
+              {parseInt(swiperList[0].loan).toFixed(2)}
+            </Text>
+            <Image src={swiperList[0].token.image} width="20px" style={{margin:'0px 5px'}} />
           </Flex>
-          <PositionTag betPosition={betPosition}>{formatUsd(priceDifference)}</PositionTag>
+          <PositionTag betPosition={betPosition}>
+           
+            <Flex display="flex" alignItems="center">
+            <Text color='#fff' bold fontSize="24px">
+              {priceDifference}
+            </Text>
+            <Image src={swiperList[0].token.image} width="20px" style={{margin:'0px 5px'}} />
+          </Flex>
+          </PositionTag>
         </Flex>
 
           {ExList.map((item, index) => (

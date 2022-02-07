@@ -59,7 +59,7 @@ const PnlTab: React.FC<PnlTabProps> = ({ hasBetHistory, bets }) => {
             {t('Net results')}
           </Text>
           <Text bold fontSize="24px" lineHeight="1" color={true ? 'success' : 'failure'}>
-            {`${caculateProfit > 0 ? '+' : ''}${formatBnb(caculateProfit)} BNB`}
+            {`${caculateProfit > 0 ? '+' : ''}${formatBnb(caculateProfit)} $`}
           </Text>
           <Text small color="textSubtle">
 
@@ -71,7 +71,7 @@ const PnlTab: React.FC<PnlTabProps> = ({ hasBetHistory, bets }) => {
           {t('Average return / transaction')}
         </Text>
         <Text bold color={true ? 'success' : 'failure'}>
-          {`${true ? '+' : ''}${formatBnb(caculateProfit/arr.length)} BNB`}
+          {`${true ? '+' : ''}${formatBnb(caculateProfit/arr.length)} $`}
         </Text>
         <Text small color="textSubtle">
 
@@ -83,7 +83,7 @@ const PnlTab: React.FC<PnlTabProps> = ({ hasBetHistory, bets }) => {
               {t('Best transaction')}
             </Text>
             <Flex alignItems="flex-end">
-              <Text bold color="success">{`+${formatBnb(Math.max(...arr))} BNB`}</Text>
+              <Text bold color="success">{`+${formatBnb(Math.max(...arr))} $`}</Text>
             </Flex>
             <Text small color="textSubtle">
 
@@ -94,7 +94,7 @@ const PnlTab: React.FC<PnlTabProps> = ({ hasBetHistory, bets }) => {
         <Text mt="16px" bold color="textSubtle">
           {t('Least profit transaction')}
         </Text>
-        <Text bold>{`${formatBnb(Math.min(...arr))} BNB`}</Text>
+        <Text bold>{`${formatBnb(Math.min(...arr))} $`}</Text>
         <Text small color="textSubtle">
         
         </Text>
