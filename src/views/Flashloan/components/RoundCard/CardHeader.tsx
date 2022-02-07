@@ -4,6 +4,7 @@ import styled, { DefaultTheme } from 'styled-components'
 import SelectCoin from './SelectCoin'
 import {providerType, Coin, State} from "../../../../state/types"
 import tokens from "../../../../config/constants/tokens"
+import loans from "../../../../config/constants/loans"
 import routerV from "../../../../config/constants/routerV"
 import { useSelector } from 'react-redux'
 type Status = 'expired' | 'live' | 'next' | 'soon' | 'canceled' | 'calculating'
@@ -70,15 +71,16 @@ const Image = styled.img`
    width:20px;
    height:20px;
 `
-const CardHeader: React.FC<CardHeaderProps> = ({ status, title, epoch, icon, hide, isExchange = false , handleSelect}) => {
+const CardHeader: React.FC<CardHeaderProps> = ({ status, title, epoch, icon, hide, isExchange = false, handleSelect}) => {
   const textColor = getTextColorByStatus(status, 'text')
   const isLive = status === 'live'
   const reverseToken = useSelector((state: State) => state.Flashloan.swiperList[0].token)
   const exchangeProvider = useSelector((state: State) => state.Flashloan.swiperList[epoch].exchange)
   const dataSelect = isExchange ? exchangeProvider : reverseToken;
-
+  console.log("epoch", epoch);
+  const isLoan = (epoch === 0) ? true: false;
   const [onpresentSelectCoin] = useModal(
-    <SelectCoin list={isExchange ? routerV: tokens} onSelect={handleSelect} isExchange={isExchange} />,
+    <SelectCoin list={isExchange ? routerV:(isLoan ? loans : tokens) } onSelect={handleSelect} isExchange={isExchange} />,
     false,
   )
   return (

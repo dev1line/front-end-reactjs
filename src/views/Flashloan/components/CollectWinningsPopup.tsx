@@ -137,31 +137,6 @@ const CollectWinningsPopup = () => {
     clearInterval(timer.current)
   }
 
-  // Check user's history for unclaimed winners
-  // useEffect(() => {
-  //   let isCancelled = false
-  //   if (account) {
-  //     timer.current = setInterval(async () => {
-  //       const bets = await getBetHistory({ user: account.toLowerCase(), claimed: false })
-
-  //       if (!isCancelled) {
-  //         // Filter out bets that were not winners
-  //         const winnerBets = bets.filter((bet) => {
-  //           return bet.position === bet.round.position
-  //         })
-
-  //         if (!isHistoryPaneOpen) {
-  //           setIsOpen(winnerBets.length > 0)
-  //         }
-  //       }
-  //     }, 30000)
-  //   }
-
-  //   return () => {
-  //     clearInterval(timer.current)
-  //     isCancelled = true
-  //   }
-  // }, [account, timer, Flashloantatus, setIsOpen, isHistoryPaneOpen])
 
   // Any time the history pane is open make sure the popup closes
   useEffect(() => {

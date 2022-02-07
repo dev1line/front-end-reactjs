@@ -26,7 +26,7 @@ const ClaimButton: React.FC<Props> = ({ poolId, walletIfoData }) => {
       walletIfoData.setIsClaimed(poolId)
       toastSuccess(t('Success!'), t('You have successfully claimed your rewards.'))
     } catch (error) {
-      toastError(t('Error'), error?.message)
+      toastError(t('Error'), error)
       console.error(error)
     } finally {
       setPendingTx(false)

@@ -40,7 +40,7 @@ const Positions: React.FC = () => {
   const rounds = useGetSortedRounds()
   const initialIndex = Math.floor(rounds.length / 2)
   const { toastError, toastSuccess } = useToast()
-
+  // const [isFail, setIsFail] = useState(false);
   const { account } = useWeb3React()
   const abi = useSelector((state: State) => state.Flashloan.contract.abi)
   const address = useSelector((state: State) => state.Flashloan.contract.address) 
@@ -63,7 +63,8 @@ const Positions: React.FC = () => {
       abi,
       signer
     );
-
+    const prf = await contract.profit();
+    console.log("current profit: ", prf)
     const reportError = ({message}: {message: string}) => {
     console.log("report", message.toString())
     const tx = message.slice(37, 103);
@@ -80,6 +81,7 @@ const Positions: React.FC = () => {
         [...swiperListExchange]
       ]
       console.log("data", data, contract)
+      let isErr = false;
       try {
         dispatch(setLoading(true));
         const runFlash = await contract.initateFlashLoan(
@@ -89,8 +91,10 @@ const Positions: React.FC = () => {
         const receipt = await runFlash.wait();
         txhash = receipt.transactionHash;
           toastSuccess("Transaction successfully in ", `${ receipt.transactionHash}`)
+          isErr = false;
       } catch(error: any) {
         console.log(error);
+        isErr = true;
         if (error instanceof Error) 
         reportError({message: error.message})
         else 
@@ -102,11 +106,11 @@ const Positions: React.FC = () => {
       const history = {
         name: `${histories.length + 1}`,
         history: JSON.stringify(swiperList),
-        profit:ethers.utils.formatEther(profitValue),
+        profit: isErr ? "0": ethers.utils.formatEther(profitValue),
         txhash,
         sender: account
       }
-      console.log("history", history)
+      console.log("history", history, isErr)
       await createHistory({
         variables: {
           history

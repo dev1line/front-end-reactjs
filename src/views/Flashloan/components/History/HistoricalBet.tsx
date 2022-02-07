@@ -10,7 +10,7 @@ import {
 import styled from 'styled-components'
 import { Result } from 'state/Flashloan/helpers'
 import { useTranslation } from 'contexts/Localization'
-import CollectWinningsButton from '../CollectWinningsButton'
+// import CollectWinningsButton from '../CollectWinningsButton'
 import BetDetails from './BetDetails'
 
 interface BetProps {
@@ -79,7 +79,7 @@ const HistoricalBet: React.FC<BetProps> = ({ bet }) => {
         </Box>
         <YourResult id="flx" px="24px">{renderBetLabel()}</YourResult>
       
-          <CollectWinningsButton
+          {/* <CollectWinningsButton
             hasClaimed={false}
             roundId={"2"}
             epoch={1}
@@ -88,7 +88,7 @@ const HistoricalBet: React.FC<BetProps> = ({ bet }) => {
             mr="8px"
           >
            Share
-          </CollectWinningsButton>
+          </CollectWinningsButton> */}
  
           <IconButton variant="text" scale="sm">
             {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}

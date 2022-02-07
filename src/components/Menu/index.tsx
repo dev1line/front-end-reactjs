@@ -19,6 +19,7 @@ import { CHECK_ACCOUNT } from 'query/general'
 import { CREATE_ACCOUNT } from 'query/mutation'
 import { client } from 'apolo-client'
 import { SERVER_API } from 'apolo-client/config'
+import PopupShould from './PopupShould'
 
 declare let window: any;
 const Boxer = styled.div`
@@ -129,11 +130,20 @@ const Menu = (props) => {
     <Profile payout={100} roundId={"okok"} epoch={1} />,
     false,
   )
+
+  const [onpresentLogin] = useModal(
+    <PopupShould />,
+    false,
+  )
   
   useEffect(() => {
     $("#aaa > div > div:last-child  > div:first-child > div:last-child > div:first-child").css("display", "none")
     $("#aaa > div > div:last-child  > div:first-child > div:first-child > div:nth-child(6)").click(() => {
-      onpresentReferral()
+      if (account) {
+        onpresentReferral()
+      }
+      else 
+      onpresentLogin()
     })
     $("#aaa > div >  nav:first-child > div:last-child > div:last-child > a > img").css({width: "30px", height: "30px"})
     if(account) {
@@ -141,7 +151,7 @@ const Menu = (props) => {
         onpresentProfile()
       })
     }
-  },[onpresentReferral, onpresentProfile, account]);
+  },[onpresentReferral, onpresentProfile, onpresentLogin, account]);
   function reverseString(str) {
     var splitString = str.split(""); 
     var reverseArray = splitString.reverse(); 
