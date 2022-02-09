@@ -64,7 +64,7 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
   const [media, setMedia] = useState("");
   const {account} = useWeb3React();
   const { toastError, toastSuccess, toastWarning } = useToast()
-  
+ 
   const { loading: fetching,  
     error,
     data: yourProfile = {},
@@ -73,6 +73,7 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
         sender: account || ""
       }
     });
+  
     useEffect(() => {
       refetch();
     }, [refetch, account]);
