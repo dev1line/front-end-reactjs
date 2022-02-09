@@ -53,7 +53,7 @@ const Positions: React.FC = () => {
 
   const handleConfirmFlash = async () => {
   
-    console.log("start flash now:", swiperList)
+    // console.log("start flash now:", swiperList)
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -69,7 +69,7 @@ const Positions: React.FC = () => {
     console.log("report", message.toString())
     const tx = message.slice(37, 103);
     txhash = tx;
-    toastError(`An transaction fail in `, `${tx}`)
+    toastError(`An transaction fail`)
     }
 
     const swiperListExchange = swiperList.filter(e => e.type === StatusBlock.EXCHANGE).map(item => (
@@ -90,7 +90,7 @@ const Positions: React.FC = () => {
         );
         const receipt = await runFlash.wait();
         txhash = receipt.transactionHash;
-          toastSuccess("Transaction successfully in ", `${ receipt.transactionHash}`)
+          toastSuccess("Transaction successfully")
           isErr = false;
       } catch(error: any) {
         console.log(error);
