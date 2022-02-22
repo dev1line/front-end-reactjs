@@ -77,7 +77,7 @@ const CardHeader: React.FC<CardHeaderProps> = ({ status, title, epoch, icon, hid
   const reverseToken = useSelector((state: State) => state.Flashloan.swiperList[0].token)
   const exchangeProvider = useSelector((state: State) => state.Flashloan.swiperList[epoch].exchange)
   const dataSelect = isExchange ? exchangeProvider : reverseToken;
-  console.log("epoch", epoch);
+
   const isLoan = (epoch === 0) ? true: false;
   const [onpresentSelectCoin] = useModal(
     <SelectCoin list={isExchange ? routerV:(isLoan ? loans : tokens) } onSelect={handleSelect} isExchange={isExchange} />,

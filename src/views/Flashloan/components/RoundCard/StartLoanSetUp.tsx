@@ -24,13 +24,12 @@ interface PropsStart {
 const StartLoanSetUp: React.FC<PropsStart> = ({block}) => {
   const { t } = useTranslation()
   const loan = useSelector((state:State) => state.Flashloan.swiperList[0].loan)
-  console.log("loan", loan)
   const [amount, setAmount] = useState(0)
   const swiperList = useSelector((state:State) => state.Flashloan.swiperList)
   const [isConfirm, setIsConfirm] = useState(false)
   const [reverse, setReverse] = useState(tokens[0])
   const dispatch = useAppDispatch()
-  // console.log("account:", account, swiperList)
+
   const handleChange = (e) => {
     setAmount(Math.abs(e.target.value));
   }
@@ -40,10 +39,10 @@ const StartLoanSetUp: React.FC<PropsStart> = ({block}) => {
     return parseInt(num.slice(index));
   }
   const handleConfirm = (e, amount) => {
-    console.log("data", amount)
+
     setIsConfirm(true);
     const repl = typeof amount != "number" ? delZero(amount as string) : amount;
-    console.log(repl)
+
     setAmount(repl);
     if(!swiperList.find(i => i.type === StatusBlock.ADD_END)) {
       const data = {
@@ -51,7 +50,6 @@ const StartLoanSetUp: React.FC<PropsStart> = ({block}) => {
       }
       const pusher = swiperList.slice();
       pusher.push(data);
-      // console.log("pusher:sss", pusher)
       dispatch(setSwiperList(pusher));
     }
     dispatch(setLoan(repl))
@@ -89,7 +87,7 @@ const StartLoanSetUp: React.FC<PropsStart> = ({block}) => {
       } : ii
     })
     dispatch(setSwiperList(ExList));
-    console.log("ExList", ExList);
+
     close();
   }
   return (

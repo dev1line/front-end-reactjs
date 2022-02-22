@@ -69,7 +69,6 @@ export const FlashloanSlice = createSlice({
     },
     setReverseCoin: (state, action: PayloadAction<Coin>) => {
       state.swiperList[0].token = action.payload;
-      console.log("update:", action.payload)
     },
     addExchange: (state, action: PayloadAction<any>) => {    
       state.swiperList = action.payload
@@ -78,11 +77,9 @@ export const FlashloanSlice = createSlice({
       state.swiperList[action.payload.index].exchange = action.payload.exchange;
     },
     changeTokenIn: (state, action: PayloadAction<any>) => {   
-      console.log("Action.payload in", action.payload)
       state.swiperList[action.payload.index].tokenIn = action.payload.coin;
     },
     changeTokenOut: (state, action: PayloadAction<any>) => {   
-      console.log("Action.payload out", action.payload)
       state.swiperList[action.payload.index].tokenOut = action.payload.coin;
     },
     setLoan: (state, action: PayloadAction<any>) => {   

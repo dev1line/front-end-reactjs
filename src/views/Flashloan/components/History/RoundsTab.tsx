@@ -15,7 +15,7 @@ const RoundsTab: React.FC<RoundsTabProps> = ({ hasBetHistory, bets }) => {
   const { t } = useTranslation()
   const historyFilter = useGetHistoryFilter()
   const histories = useSelector((state: State) => state.Flashloan.history)
-  console.log("DATA histories:", histories)
+
   const getDataFilter = (histories, cond) => {
     switch(cond) {
       case HistoryFilter.ALL: {
@@ -38,11 +38,11 @@ const RoundsTab: React.FC<RoundsTabProps> = ({ hasBetHistory, bets }) => {
   ) : (
     <Box p="24px">
       <Heading size="lg" textAlign="center" mb="8px">
-        {t('No transaction history available')}
+        {t('Không có lịch sử giao dịch')}
       </Heading>
       <Text as="p" textAlign="center">
         {t(
-          'If you are sure you should see history here, make sure you’re connected to the correct wallet and try again.',
+          'Nếu bạn chắc chắn mình sẽ thấy lịch sử ở đây, hãy đảm bảo rằng bạn đã kết nối với đúng ví và thử lại.',
         )}
       </Text>
     </Box>

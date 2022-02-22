@@ -9,7 +9,7 @@ const Guide = () => {
 
   return (
     <>
-      <Hero title="Guide to using flashloans" sub_title='All functions need to handle step by step' />
+      <Hero title="Hướng dẫn sử dụng flashloans" sub_title='Hướng dẫn chi tiết theo từng bước cụ thể' />
         <Container>     
             <Route exact path={`${path}`}>
               <CurrentIfo />

@@ -18,18 +18,16 @@ const PrizesCard = () => {
     <StyledCard>
       <CardHeader>
         <Heading scale="lg" color="secondary">
-         Ranking
+        Xếp hạng
         </Heading>
         <Text color="textSubtle" fontSize="14px">
-          {t('Higher trading volume = higher rank!')}
+          {t('Khối lượng giao dịch cao hơn = thứ hạng cao hơn!')}
         </Text>
       </CardHeader>
       <PrizesGrid />
       <Box p="24px">
-        <Text color="textSubtle" fontSize="14px">
-        
-            Prizes to be distributed in ITF token and shared by all members of a tier. ITF token price in USD to be determined on the day of distribution. Details below.
-       
+        <Text color="textSubtle" fontSize="14px">   
+          {t('Giải thưởng sẽ được phân phối dưới dạng mã thông báo ITF và được chia sẻ bởi tất cả các thành viên của một cấp. Giá mã thông báo ITF bằng USD sẽ được xác định vào ngày phân phối. Chi tiết bên dưới.')}
         </Text>
       </Box>
     </StyledCard>
