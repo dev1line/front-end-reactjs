@@ -45,10 +45,10 @@ const Guideteps: React.FC<Props> = ({ ifo }) => {
         return (
           <CardBody>
             <Heading as="h4" color="secondary" mb="16px">
-              {t('Activate your Wallet')}
+              {t('Kích hoạt Ví của bạn')}
             </Heading>
             <Text color="textSubtle" small mb="16px">
-              {t('You’ll need an active Ethereum Wallet to take part in a simple flashloan!')}
+              {t('Bạn sẽ cần một Ví Ethereum đang hoạt động để tham gia một flashloan đơn giản!')}
             </Text>
           </CardBody>
         )
@@ -56,10 +56,10 @@ const Guideteps: React.FC<Props> = ({ ifo }) => {
         return (
           <CardBody>
             <Heading as="h4" color="secondary" mb="16px">
-              {t('Get a little ETH into your wallet')}
+              {t('Nhận một ít ETH vào ví của bạn')}
             </Heading>
             <Text color="textSubtle" small>
-              {t('You’ll get more ETH in this below link')}
+              {t('Bạn sẽ nhận được nhiều ETH hơn trong liên kết bên dưới này')}
             </Text>
             <Button
               as={Link}
@@ -68,7 +68,7 @@ const Guideteps: React.FC<Props> = ({ ifo }) => {
               endIcon={<OpenNewIcon color="white" />}
               mt="16px"
             >
-              {t('Get ETH in testnet')}
+              {t('Nhận ETH trong testnet')}
             </Button>
           </CardBody>
         )
@@ -76,14 +76,14 @@ const Guideteps: React.FC<Props> = ({ ifo }) => {
         return (
           <CardBody>
             <Heading as="h4" color="secondary" mb="16px">
-              {t('Open Flashloan tab and initiate a flashloan')}
+              {t('Mở tab Flashloan và bắt đầu flashloan')}
             </Heading>
             <Text color="textSubtle" small>
-              {t('Create a loan that you need')} <br />
-              {t('Add actions to use your loan wisely')} <br />
-              {t('Edit exchanges and tokens you want reasonably')} <br />
-              {t('Approve token input if token do not approve before')} <br />
-              {t('Start flashloan')} <br />
+              {t('Tạo một khoản vay mà bạn cần')} <br />
+              {t('Thêm các hành động để sử dụng khoản vay của bạn một cách khôn ngoan')} <br />
+              {t('Chỉnh sửa các trao đổi và mã thông báo bạn muốn một cách hợp lý')} <br />
+              {t('Phê duyệt đầu vào mã thông báo nếu mã thông báo không chấp thuận trước đó')} <br />
+              {t('Bắt đầu flashloan')} <br />
             </Text>
           </CardBody>
         )
@@ -91,13 +91,13 @@ const Guideteps: React.FC<Props> = ({ ifo }) => {
         return (
           <CardBody>
             <Heading as="h4" color="secondary" mb="16px">
-              {t('Claim your tokens and achievement')}
+              {t('Yêu cầu mã thông báo và thành tích của bạn')}
             </Heading>
             <Text color="textSubtle" small>
               {t(
-                'After transaction success, you can claim a profit',
+                'Sau khi giao dịch thành công, bạn có thể nhận được lợi nhuận',
               )}  <br />
-                 {t('If it fail, you only lost a little fee to create protocol for loan')} <br />
+                 {t('Nếu không thành công, bạn chỉ mất một ít phí để tạo giao thức cho khoản vay')} <br />
             </Text>
           </CardBody>
         )
@@ -109,7 +109,7 @@ const Guideteps: React.FC<Props> = ({ ifo }) => {
   return (
     <Wrapper>
       <Heading as="h2" scale="xl" color="secondary" mb="24px" textAlign="center">
-        {t('How to Take Part')}
+        {t('Làm thế nào để tham gia')}
       </Heading>
       <Stepper>
         {stepsValidationStatus.map((_, index) => (

@@ -46,7 +46,7 @@ const SpinnerWrapper = styled.div`
 const ConfirmFlash: React.FC<ConfirmFlashProps> = ({ data, onDismiss, onSuccess, onConfirm}) => {
   const isLoading = useSelector((state: State) => state.Flashloan.isLoading);
   const ExList = data.filter(i => i.type === StatusBlock.EXCHANGE)
-  console.log("ExList", ExList)
+
   return (
     <Modal minWidth="288px" position="relative" mt="124px">   
       <ModalHeader>

@@ -46,7 +46,8 @@ const BattleBanner = () => {
        ITF Flashloan
       </StyledHeading2Text>
       <StyledHeading scale="md" color="inputSecondary" mt="16px">
-        This is how to borrow money without collateral on blockchain platform
+        {/* This is how to borrow money without collateral on blockchain platform */}
+        Hãy cùng chúng tôi trải nghiệm ứng dụng vay chớp nhoáng trên nền tảng blockchain này
       </StyledHeading>
     </Flex>
   )

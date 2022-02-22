@@ -81,7 +81,7 @@ const Info: React.FC<CollectRoundWinningsModalProps> = ({
     useEffect(() => {
       yourProfile &&  yourProfile.account && setNickname(yourProfile.account[0]?.nickname);
     }, [yourProfile]);
-    yourProfile &&  yourProfile.account && console.log("Your profile", yourProfile, yourProfile.account[0]?.avatar?.original)
+ 
   const [updateProfile] = useMutation(UPDATE_PROFILE);
   const handleChangeAvatar = () => {
     document.getElementById("lb-upload").click();

@@ -27,8 +27,6 @@ const useAuth = () => {
   const web3 = useWeb3();
   const login = useCallback((connectorID: ConnectorNames) => {
     const connector = connectorsByName[connectorID]
-   
-    console.log("connector", connector,connectorID, web3)
     if (connector) {
       requestAccount();
       activate(connector, async (error: Error) => {
@@ -56,7 +54,6 @@ const useAuth = () => {
           }
         }
         const data = await switchNetwork();
-        console.log("data", data)
       })
     } else {
       toastError(t('Can’t find connector'), t('The connector config is wrong'))

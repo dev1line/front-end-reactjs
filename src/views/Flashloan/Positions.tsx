@@ -53,7 +53,6 @@ const Positions: React.FC = () => {
 
   const handleConfirmFlash = async () => {
   
-    // console.log("start flash now:", swiperList)
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -64,9 +63,9 @@ const Positions: React.FC = () => {
       signer
     );
     const prf = await contract.profit();
-    console.log("current profit: ", prf)
+
     const reportError = ({message}: {message: string}) => {
-    console.log("report", message.toString())
+
     const tx = message.slice(37, 103);
     txhash = tx;
     toastError(`An transaction fail`)
@@ -80,7 +79,6 @@ const Positions: React.FC = () => {
         ethers.utils.parseEther(`${swiperList[0].loan}`),
         [...swiperListExchange]
       ]
-      console.log("data", data, contract)
       let isErr = false;
       try {
         dispatch(setLoading(true));
@@ -110,7 +108,7 @@ const Positions: React.FC = () => {
         txhash,
         sender: account
       }
-      console.log("history", history, isErr)
+
       await createHistory({
         variables: {
           history
@@ -131,7 +129,7 @@ const Positions: React.FC = () => {
         sender: account
     }
   });
-  console.log("historyData", historyData?.histories)
+
   useEffect(() => {
     if (!fetching && !error && historyData?.histories && historyData?.histories.length > 0) {
 

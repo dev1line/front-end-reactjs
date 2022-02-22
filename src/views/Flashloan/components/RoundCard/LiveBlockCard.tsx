@@ -35,7 +35,7 @@ interface PropsLive {
   epoch: number
 }
 const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
- console.log("block:", block, epoch)
+
   const dispatch = useAppDispatch();
   const swiperList = useSelector((state: State) => state.Flashloan.swiperList)
   const abi = useSelector((state: State) => state.Flashloan.contract.abi)
@@ -53,7 +53,7 @@ const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
     closeTokenIn()
   }
   const handleSelectTokenOut = (e, item) => {
-    console.log(item);
+  
     const temp = swiperList.slice();
     const newswiperList = temp.map((i, index) => {
       if(i.type === StatusBlock.EXCHANGE && i.refund && i.tokenIn === block.tokenOut) {
@@ -92,16 +92,16 @@ const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
 
     const justOut = newswiperList.filter(i => i.type === StatusBlock.EXCHANGE && !i.refund).map(ii => ii.tokenOut);
     const justIn =  newswiperList.filter(i => i.type === StatusBlock.EXCHANGE && i.refund).map(ii => ii.tokenIn);
-    console.log("just", justOut, justIn)
+
     const data = new Set<Coin>(justIn);
     data.forEach((iii, index) => {
       if(justOut.findIndex(i => i.address === iii.address) < 0 || justIn.filter(its => its === iii).length > 1) {
         const position = newswiperList.findIndex(it => it.tokenIn === iii && it.refund);
-        console.log("position", iii, position)
+     
         newswiperList.splice(position, 1);
       }
     })
-    console.log("newswiperList", newswiperList)
+  
     dispatch(setSwiperList(newswiperList));
     closeTokenOut()
   }
@@ -115,7 +115,7 @@ const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
     false,
   )
   const handleSelect = (e, item) => {
-    console.log("TIm thay roi nghe:", item)
+
     const data = {
       index: epoch,
       exchange: item
@@ -141,20 +141,20 @@ const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
     })
     const justOut = lastList.filter(i => i.type === StatusBlock.EXCHANGE && !i.refund).map(ii => ii.tokenOut);
     const justIn =  lastList.filter(i => i.type === StatusBlock.EXCHANGE && i.refund).map(ii => ii.tokenIn);
-    console.log("just", justOut, justIn)
+    
     justIn.forEach((iii, index) => {
       if(justOut.findIndex(i => i.address === iii.address) < 0) {
         const position = lastList.findIndex(i => i.tokenIn === iii && i.refund);
-        console.log("position", iii, position)
+     
         lastList.splice(position, 1);
       }
     })
-    console.log("lastList", lastList)
+
     dispatch(setSwiperList(lastList))
   }
   const reportError = ({message}: {message: string}) => {
-    console.log("report", message.toString())
-    console.log(message.slice(37, 103))
+    // console.log("report", message.toString())
+    // console.log(message.slice(37, 103))
    }
   const handleApprove = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -168,7 +168,6 @@ const LiveBlockCard: React.FC<PropsLive> = ({block, epoch}) => {
     try {
       const approve = await contract.approve(block.tokenIn.address, block.exchange.address, ethers.constants.MaxInt256)
       const txHash = await approve.wait();
-      console.log("txHash:", txHash)
     } catch(error) {
     console.log(error);
     if (error instanceof Error) 

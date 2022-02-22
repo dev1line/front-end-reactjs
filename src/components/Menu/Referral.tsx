@@ -17,10 +17,10 @@ import {
   Button,
 } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
-import { CHECK_ACCOUNT, GET_YOUR_ACCOUNT } from 'query/general'
+import { CHECK_ACCOUNT, GET_LIST_REFERRAL_BY_ADDR, GET_YOUR_ACCOUNT } from 'query/general'
 import { useMutation, useQuery } from '@apollo/client'
 import { CREATE_REFERRAL } from 'query/mutation'
-
+import useToast from 'hooks/useToast'
 interface CollectRoundWinningsModalProps extends InjectedModalProps {
   payout: number
   roundId: string
@@ -85,6 +85,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
   onSuccess,
   onClose
 }) => {
+  const { toastError, toastSuccess, toastWarning } = useToast()
   const [index, setIndex] = useState(0);  
   const {account} = useWeb3React();
   const [referralCode, setReferralCode] = useState(account ? reverseString(account): "");
@@ -92,6 +93,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
   const [isCopied, setIsCopied] = useState(false);
   const [createReferral] = useMutation(CREATE_REFERRAL);
   const [isHide, setIsHide] = useState(false);
+  const [listReferral, setListReferral] = useState([]);
   const {
     loading: fetching,  
     error,
@@ -99,24 +101,24 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
     refetch,
   } = useQuery(CHECK_ACCOUNT);
   const {
-    // loading,  
-    // error: err,
     data: yourAccount = {},
-    // refetch: refetcher,
   } = useQuery(GET_YOUR_ACCOUNT, {
     variables: {
       sender: account || ""
   }});
+  useQuery(GET_LIST_REFERRAL_BY_ADDR, {
+    variables: {
+      address: account || ""
+  },
+  onCompleted: (data) => {
+    setListReferral(data.referralsList);
+  }
+});
+  console.log(listReferral)
   const handleClickMenu = (index) => {
     setIndex(index);
     console.log(index)
   }
-  // if (account && !err && !loading) {
-  //   refetcher({
-  //     variables: {
-  //       sender: account || ""
-  //   }});
-  // }
   useEffect(() => {
    
     if (account) {
@@ -179,8 +181,6 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
     .catch(() => console.log('error'));
   }
   
-
-  // console.log("yourAccount id", yourAccount)
   const formatDate = (date) => {
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -195,25 +195,28 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
     return [year, month, day].join('-');
 }
   const handleSendReferralCode = async () => {
-    console.log("value now to submit", checkAccountExist)
+
+    if (account == reverseString(referralCodeFrom)) {
+      toastError("Không được sử dụng mã của bạn");
+      return;
+    }
+    if(reverseString(referralCodeFrom).length != 42) {
+      toastError("Mã mời không hợp lệ");
+      return;
+    }
     refetch({
       variables: {
         sender:reverseString(referralCodeFrom) || ""
     }
     });
-    if(!fetching && !error && checkAccountExist?.account?.length === 0) {
-      //return not found referralcode
-      console.log("account not found 1", reverseString(referralCodeFrom))
-      return;
-    }
-    const data = {
-      addressFrom: reverseString(referralCodeFrom),
-      addressTo: account,
-      referralCode: referralCodeFrom,
-      referralAt: formatDate(new Date()),
-    }
-    if(checkAccountExist?.account?.length > 0) {
-      console.log("start create Referral")
+    if(!fetching && !error && checkAccountExist?.account?.length > 0) {
+
+      const data = {
+        addressFrom: reverseString(referralCodeFrom),
+        addressTo: account,
+        referralCode: referralCodeFrom,
+        referralAt: formatDate(new Date()),
+      }
       try {
         await createReferral({
           variables: {
@@ -223,12 +226,17 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
               statusReferral: true
             }
           }
-        })
+        });
+        toastSuccess("Sử dụng mã mời thành công");
         setIsHide(true);
       } catch(err) {
         console.log(err)
       }
+      return;
+    }
   }
+  const viewWallet = (address: string) => {
+    return '' + address.slice(0, 7) + "..." + address.slice(38);
   }
   return (
     <ModalContainer minWidth="365px" position="relative" >
@@ -254,7 +262,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
       <ModalBody px="24px" pt="0px" pb="24px" overflowY="scroll" maxHeight="90vh" height="512px">  
         {index === 0 ?    
         <div>
-            <Headinger>your Refferal code</Headinger>
+            <Headinger>Mã mời của bạn</Headinger>
             <Flex alignItems="center" justifyContent="space-between" mb="24px" mt="12px" position="relative">
                 <Input id="referral-code" type="text" name='referral' value={referralCode} contentEditable="false" style={{marginRight: 10}} onChange={handleChange} />
                 <Image src="/images/vectorpaint.png" height="20px" width="20px" style={{cursor:'pointer'}} onClick={handleCopy} />            
@@ -274,42 +282,40 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
             </Flex>
            {((yourAccount && yourAccount.account && yourAccount?.account[0]?.statusReferral) || isHide) ? "" :
             <>
-              <Headinger>Enter Your friend's Referral Code</Headinger>
+              <Headinger>Nhập mã mời của từ bạn bè</Headinger>
               <Flex alignItems="center" justifyContent="space-between" mb="24px" mt="12px" position="relative">
                   <Input id="referral-code-from" type="text" name='referral-from' value={referralCodeFrom} style={{marginRight: 10}} onChange={handleChange} />
                   <Button onClick={handleSendReferralCode}>
-                    Send
+                    Gửi
                   </Button>                      
               </Flex>
             </>
            }
-            <Headinger>your Refferals</Headinger>
+            <Headinger>Danh sách bạn mời</Headinger>
                 <table style={{width:'100%', borderRadius:7}}>
                   <thead>
                     <tr style={{ padding: '3px 4px 0px', fontSize: 12, textTransform: 'uppercase', borderBottom: '1px solid rgb(118, 69, 217)', fontWeight:'bold'}}>
-                        <Tdcpn width="30%" style={{color:"rgb(80 0 255)"}} >Wallet</Tdcpn>
-                        <Tdcpn width="20%" style={{color:"rgb(80 0 255)"}}>Bets</Tdcpn>
-                        <Tdcpn style={{color:"rgb(80 0 255)"}}>volume(BNB)</Tdcpn>
-                        <Tdcpn style={{color:"rgb(80 0 255)"}}>Revenue%1</Tdcpn>
+                        <Tdcpn width="20%" style={{color:"rgb(80 0 255)"}} >ID</Tdcpn>
+                        <Tdcpn width="50%" style={{color:"rgb(80 0 255)"}}>Wallet</Tdcpn>        
+                        <Tdcpn style={{color:"rgb(80 0 255)"}}>At</Tdcpn>
                     </tr>
                   </thead>
                 </table>
                 <div style={{overflowY:'auto', height:108, width: (false) ? '100%' : '102%'}}>
                   <table style={{width:'100%', borderRadius:7}}>
                     <tbody>
-                      {Array.from({length: 10}, (item, index) => (
+                      {listReferral.length > 0 && listReferral.map((item, index) => (
                           <tr key={index} style={{ fontSize:10, padding: '3px 4px', boxShadow: '0px -1px 0px 0px rgb(14 14 44 / 40%) inset', borderRadius: 7}}>
-                            <Tdcpn width="30%">0x..74{index + 2 % 21 + 10}</Tdcpn>
-                            <Tdcpn width="20%">{index%3 === 0 ? "true" : "false"}</Tdcpn>
-                            <Tdcpn>{index%3 *4**2}</Tdcpn>
-                            <Tdcpn>{(index%3 *4**2)/100}</Tdcpn>
+                            <Tdcpn width="20%">{index + 1}</Tdcpn>
+                            <Tdcpn width="50%">{viewWallet(item.addressTo)}</Tdcpn>
+                            <Tdcpn>{item.referralAt}</Tdcpn>
                         </tr>
                       ))}          
                     </tbody>
                 </table>
                </div>
         
-            <Headinger>your payments</Headinger>
+            {/* <Headinger>your payments</Headinger>
            
                  <table style={{width:'100%', borderRadius:7,}}>
                    <tbody>
@@ -333,9 +339,9 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                       ))} 
                     </tbody>   
                   </table>
-               </div>
+               </div> */}
 
-            <Flex alignItems="start" justifyContent="space-between" mt="10px" >
+            {/* <Flex alignItems="start" justifyContent="space-between" mt="10px" >
                 <Text>Total Revenue</Text>
                 <Wrapper>
                   <Box style={{ textAlign: 'right' }}>
@@ -353,17 +359,17 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                   </Box>
                   <Image src="/images/bscicon.svg" />
                 </Wrapper>
-                </Flex>
+                </Flex> */}
 
-                <Flex alignItems="start" justifyContent="space-between" >
-                <Text>Pending Balnce</Text>
+                {/* <Flex alignItems="start" justifyContent="space-between" >
+                <Text>Số lượng đã mời</Text>
                 <Wrapper>
                   <Box style={{ textAlign: 'right', fontWeight:'bold' }}>
-                      <Text>{`${(112)} BNB`}</Text>
+                      <Text>{`${(112)}`}</Text>
                   </Box>
                   <Image src="/images/bscicon.svg" />
                 </Wrapper>
-                </Flex>
+                </Flex> */}
         </div>
         :
             <div>
@@ -402,7 +408,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                   </table>
                </div> 
 
-               <Flex alignItems="start" justifyContent="space-between" mt="10px" >
+               {/* <Flex alignItems="start" justifyContent="space-between" mt="10px" >
                 <Text>Distributed Payments</Text>
                 <Wrapper>
                   <Box style={{ textAlign: 'right' }}>
@@ -410,7 +416,7 @@ const Referral: React.FC<CollectRoundWinningsModalProps> = ({
                   </Box>
                   <Image src="/images/bscicon.svg" />
                 </Wrapper>
-                </Flex>
+                </Flex> */}
             </div>    
         }
       </ModalBody>

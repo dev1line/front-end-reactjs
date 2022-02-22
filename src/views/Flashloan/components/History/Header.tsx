@@ -114,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
                 disabled={isFetchingHistory || !account}
                 onChange={handleChange(HistoryFilter.SUCESS)}
               />
-              <Text ml="4px">Success</Text>
+              <Text ml="4px">Thành công</Text>
             </Filter>
             <Filter>
               <Radio
@@ -123,7 +123,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
                 disabled={isFetchingHistory || !account}
                 onChange={handleChange(HistoryFilter.FAIL)}
               />
-              <Text ml="4px">Fail</Text>
+              <Text ml="4px">Thất bại</Text>
             </Filter>
           </Flex>
         </>

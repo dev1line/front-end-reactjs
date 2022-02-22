@@ -27,10 +27,6 @@ BigNumber.config({
 })
 
 const App: React.FC = () => {
-  // useEffect(async () => {
-  //   const {data} = await client.query({ query: ALL_HISTORY});
-  //   console.log(data);
-  // }, [])
   useEagerConnect()
   return (
     <ApolloProvider client={client}>

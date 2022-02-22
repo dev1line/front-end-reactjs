@@ -68,7 +68,7 @@ const PnlTab: React.FC<PnlTabProps> = ({ hasBetHistory, bets }) => {
       </Flex>
       <Box pl="8px">
         <Text mt="24px" bold color="textSubtle">
-          {t('Average return / transaction')}
+          {t('Trung bình lợi nhuận / giao dịch')}
         </Text>
         <Text bold color={true ? 'success' : 'failure'}>
           {`${true ? '+' : ''}${formatBnb(caculateProfit/arr.length)} $`}
@@ -80,7 +80,7 @@ const PnlTab: React.FC<PnlTabProps> = ({ hasBetHistory, bets }) => {
 
           <>
             <Text mt="16px" bold color="textSubtle">
-              {t('Best transaction')}
+              {t('Giao dịch tốt nhất')}
             </Text>
             <Flex alignItems="flex-end">
               <Text bold color="success">{`+${formatBnb(Math.max(...arr))} $`}</Text>
@@ -92,7 +92,7 @@ const PnlTab: React.FC<PnlTabProps> = ({ hasBetHistory, bets }) => {
   
 
         <Text mt="16px" bold color="textSubtle">
-          {t('Least profit transaction')}
+          {t('Lợi nhuận ít nhất')}
         </Text>
         <Text bold>{`${formatBnb(Math.min(...arr))} $`}</Text>
         <Text small color="textSubtle">
@@ -103,7 +103,7 @@ const PnlTab: React.FC<PnlTabProps> = ({ hasBetHistory, bets }) => {
         <Flex justifyContent="center" mt="24px">
           <Link href={`https://kovan.etherscan.io/address/${account}`} mb="16px" external>
             <Button mt="8px" width="100%">
-              {t('View Reclaimed & Won')}
+              {t('Xem chi tiết giao dịch')}
               <OpenNewIcon color="white" ml="4px" />
             </Button>
           </Link>

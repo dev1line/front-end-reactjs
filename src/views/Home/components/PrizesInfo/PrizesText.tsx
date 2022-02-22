@@ -25,15 +25,15 @@ const PrizesText = () => {
 
   return (
     <StyledFlex flexDirection="column" mb="32px">
-      <Text mb="24px">{t('Every eligible participant will win prizes at the end of the transaction.')}</Text>
+      <Text mb="24px">{t('Mọi người tham gia đủ điều kiện sẽ giành được giải thưởng khi kết thúc giao dịch')}</Text>
       <Heading color="secondary" mb="24px" scale="lg">
-        {t('Join us to receive attractive gifts!')}
+        {t('Tham gia cùng chúng tôi để nhận những phần quà hấp dẫn!')}
       </Heading>
      <Link to="/flashloan">
      <Button>
      <Text>
         {t(
-          'Flashloan Now !',
+          'Vay ngay nào !',
         )}
       </Text>
      </Button>

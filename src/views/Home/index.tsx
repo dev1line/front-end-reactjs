@@ -69,7 +69,7 @@ const Home = () => {
         intersectionPosition="top"
         intersectComponent={
           <RibbonWithImage imageComponent={<RulesIcon width="175px" />} ribbonDirection="up">
-           {t('Rules & Questions')}
+           {t('Hỏi - đáp')}
           </RibbonWithImage>
         }
       >

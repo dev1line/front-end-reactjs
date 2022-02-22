@@ -89,33 +89,19 @@ const Menu = (props) => {
       const contractFlashloanMoneyLegoAddress =
         contractDefinition.networks[kovan.networkID].address;
       try {
-        // Prompt user for account connections
-        // account = await provider.send("eth_requestAccounts", []);
         signer = provider.getSigner();
       } catch (err) {
         console.log(err);
       }
-      //(await signer.getAddress())
-      if (signer) {
-     
+      if (signer) {    
         dispatch(setContract({
           address: contractFlashloanMoneyLegoAddress,
           abi:  contractDefinition.abi,
           provider
         }));
-
-
-      } else {
-        //handle log fail connect
-        // console.log("logger:", contractDefinition.abi);
-      }
+      } 
     }
     runer();
-       //check account exist in cms
-      //  const data = refetch({
-      //   sender: account
-      // });
-      // console.log("checkAccountExist in ", checkAccountExist, data);
   }, [account, dispatch])
   const handleClose = () => {
     close();
@@ -161,7 +147,7 @@ const Menu = (props) => {
   const { currentLanguage, setLanguage, t } = useTranslation()
 
   useEffect(() => {
-    const Imag = () => `<img src="images/icon.ico" id="imgLogo" />`
+    const Imag = () => `<img src="images/ITFaculty.jpg" id="imgLogo" />`
 
     $("body").append(`<style>
       #imgLogo {

@@ -43,11 +43,11 @@ const BattleCta: React.FC = () => {
     <StyledCard>
       <CardBody>
         <Flex flexDirection="column" justifyContent="center" alignItems="center">
-          <StyledHeadingText>Tutorial</StyledHeadingText>
+          <StyledHeadingText>Hướng dẫn</StyledHeadingText>
             <Flex alignItems="flex-end">
              <Link to="/guide">
              <StyledButton>
-                Explore
+             Khám phá ngay
               </StyledButton>
              </Link>
             </Flex>

@@ -40,3 +40,12 @@ export const GET_YOUR_ACCOUNT = gql`
     }
   }
 `
+export const GET_LIST_REFERRAL_BY_ADDR = gql`
+query getReferrals($address: String!) {
+  referralsList: allReferrals(where: {addressFrom_contains: $address}) {
+    id
+    addressTo
+    referralAt
+  }
+}
+`

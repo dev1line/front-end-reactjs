@@ -28,14 +28,14 @@ const Rules = () => {
   return (
     <Wrapper>
       <StyledCardWrapper>
-        <RulesCard title={t('Trade to increase your rank')}>
+        <RulesCard title={t('Giao dịch để tăng thứ hạng của bạn')}>
           <Text textAlign="center" fontSize="14px" color="textSubtle">
-            {t('Eligible pairs: DAI/BAT, BAT/DAI, ITF/DAI and DAI/ITF')}
+            {t('Các cặp hợp lệ: DAI / BAT, BAT / DAI, ITF / DAI và DAI / ITF')}
           </Text>
         </RulesCard>
-        <RulesCard title={t('Play as a trader')}>
+        <RulesCard title={t('Chơi như một nhà giao dịch')}>
           <Text textAlign="center" fontSize="14px" color="textSubtle">
-            {t('The higher your profit, the better your prizes!')}
+            {t('Lợi nhuận của bạn càng cao, giải thưởng của bạn càng tốt!')}
           </Text>
         </RulesCard>
       </StyledCardWrapper>

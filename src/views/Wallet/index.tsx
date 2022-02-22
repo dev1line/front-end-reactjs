@@ -18,15 +18,12 @@ const Wallet: React.FC = () => {
   const [isCopiedPrivate, setIsCopiedPrivate] = useState(false);
 
   const handleCreateWWallet = () => {
-  const wallet = ethers.Wallet.createRandom()
-  setWallet({
-    address: wallet.address,
-    phrases: wallet.mnemonic.phrase,
-    privateKey: wallet.privateKey
-  })
-//  console.log('address:', wallet.address) 0xfe893e1c4e3793dC87a6a1Ebe9724Cbcb07639c3 0x1bBafD94DdaD4cDdcD2875052f476c4d041110c1
-//   console.log('mnemonic:', wallet.mnemonic.phrase) broccoli useful rug inmate rotate priority ahead provide kind amused tuition field ||| shy spike winter poet omit wrestle helmet critic advance payment museum help
-//   console.log('privateKey:', wallet.privateKey) 0xea9021a9e74c20e036e4f36ddda401581a9d1d25e80c632b8969276f1cc86ac6 ||| 0x6b83d4a939114be11628214ac1422c56385fef352954f7fc9aac64a336dbb7a7
+    const wallet = ethers.Wallet.createRandom()
+    setWallet({
+      address: wallet.address,
+      phrases: wallet.mnemonic.phrase,
+      privateKey: wallet.privateKey
+    })
   }
   const handleCopy = (name) => {
     function copyToClipboard(textToCopy) {
@@ -56,7 +53,6 @@ const Wallet: React.FC = () => {
     switch(name) {
       case "public-address": {
         text = wallet.address
-        console.log("text public-address");
         copyToClipboard(text)
         .then(() => {
           console.log('text copied !');
@@ -70,7 +66,6 @@ const Wallet: React.FC = () => {
       }
       case "phrases": {
         text = wallet.phrases;
-        console.log("text phrases");
         copyToClipboard(text)
         .then(() => {
           console.log('text copied !');
@@ -84,7 +79,6 @@ const Wallet: React.FC = () => {
       }
       case "private-address": {
         text = wallet.privateKey;
-        console.log("text private-address");
         copyToClipboard(text)
         .then(() => {
           console.log('text copied !');
@@ -102,11 +96,11 @@ const Wallet: React.FC = () => {
   
   return (
     <>
-       <Hero title="Create your ethereum wallet right now !" sub_title='Easy way to create new blockchain wallet by EthersJS' />
+       <Hero title="Tạo ví ethereum của bạn ngay bây giờ!" sub_title='Cách dễ dàng để tạo ví blockchain mới bằng EthersJS' />
        <Flex display="flex" flexDirection="column" width="100%" justifyContent="center" alignItems="center" padding="20px 0px">
       <Box style={{width:document.documentElement.clientWidth > 768 ? '50%' : '75%', maxWidth: '500px', padding: 10, border: '4px solid #0db5fa', borderRadius: 15}}>
           <Heading>
-            CREATE
+            Tạo ví Ehtereum
           </Heading>
         <Box>
         <Text>
@@ -175,7 +169,7 @@ const Wallet: React.FC = () => {
           </Flex>
         </Box>
         <Button width="100%" mt="14px" onClick={handleCreateWWallet}>
-          Create
+        Tạo ngay
         </Button>
         </Box>
       </Flex>
